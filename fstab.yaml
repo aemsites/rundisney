@@ -1,4 +1,4 @@
 mountpoints:
   /:
-    url: https://content.da.live/aemsites/rundisney/
+    url: https://content.da.live/da-pilot/rundisney/
     type: markup
