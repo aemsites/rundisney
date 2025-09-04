@@ -32,12 +32,6 @@ export default {
     console.log(main);
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
-      'section.page-header',
-      '.header',
-      'nav',
-      '.nav',
-      'footer',
-      '.footer',
       'iframe',
       'noscript',
     ]);
@@ -67,13 +61,6 @@ export default {
     ret.push({
       element: main,
       path,
-      report: {
-        title: document.title,
-        description: metadata.description,
-        keywords: metadata.keywords,
-        type: metadata['og:type'],
-        image: metadata['og:image'],
-      },
     });
 
     main.querySelectorAll('img').forEach((img) => {
