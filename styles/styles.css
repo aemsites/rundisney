@@ -10,10 +10,10 @@
  * governing permissions and limitations under the License.
  */
 
-@import './variables.css';
-@import './typography.css';
-@import './section.css';
-@import './button.css';
+@import url('./variables.css');
+@import url('./typography.css');
+@import url('./section.css');
+@import url('./button.css');
 
 body {
   display: none;

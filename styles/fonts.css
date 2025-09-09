@@ -1,75 +1,75 @@
 @font-face {
-  font-family: "InspireTWDC";
+  font-family: InspireTWDC;
   src: url("/fonts/InspireTWDC-Light.woff2") format("woff2");
   font-weight: 200;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDC";
+  font-family: InspireTWDC;
   src: url("/fonts/InspireTWDC-Roman.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDC";
+  font-family: InspireTWDC;
   src: url("/fonts/InspireTWDC-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDC";
+  font-family: InspireTWDC;
   src: url("/fonts/InspireTWDC-Heavy.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDC";
+  font-family: InspireTWDC;
   src: url("/fonts/InspireTWDC-Black.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDCLight";
+  font-family: InspireTWDCLight;
   src: url("/fonts/InspireTWDC-Light.woff2") format("woff2");
   font-weight: 200;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDCRoman";
+  font-family: InspireTWDCRoman;
   src: url("/fonts/InspireTWDC-Roman.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDCMedium";
+  font-family: InspireTWDCMedium;
   src: url("/fonts/InspireTWDC-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDCHeavy";
+  font-family: InspireTWDCHeavy;
   src: url("/fonts/InspireTWDC-Heavy.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDCBlack";
+  font-family: InspireTWDCBlack;
   src: url("/fonts/InspireTWDC-Black.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "InspireTWDCBook";
+  font-family: InspireTWDCBook;
   src: url("/fonts/InspireTWDC-Roman.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;

@@ -1,6 +1,6 @@
 /* fallback fonts */
 @font-face {
-	font-family: "InspireTWDC-fallback";
+	font-family: InspireTWDC-fallback;
 	size-adjust: 99.529%;
 	src: local('Arial');
 }
