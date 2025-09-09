@@ -28,7 +28,9 @@ export default {
   }) => {
     // const HOSTNAME = new URL(params.originalURL).origin;
     // define the main element: the one that will be transformed to Markdown
-    const main = document.body.querySelector('#mainBody > div > section#page-content .contentSection');
+    const main = document.querySelector('#mainBody > div > section#page-content .contentSection')
+      || document.querySelector('main')
+      || document.body;
     console.log(main);
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
@@ -63,20 +65,19 @@ export default {
       path,
     });
 
-    main.querySelectorAll('img').forEach((img) => {
-      console.log(img.outerHTML);
-      const { src } = img;
-      if (src) {
-        const u = new URL(src);
-        // then, all images
-        ret.push({
-          from: src,
-          path: u.pathname,
-        });
-        // adjust the src to be relative to the current page
-        img.src = `./${u.pathname.substring(u.pathname.lastIndexOf('/') + 1)}`;
-      }
-    });
+    // main.querySelectorAll('img').forEach((img) => {
+    //   const { src } = img;
+    //   if (src) {
+    //     const u = new URL(src);
+    //     // then, all images
+    //     ret.push({
+    //       from: src,
+    //       path: u.pathname,
+    //     });
+    //     // adjust the src to be relative to the current page
+    //     img.src = `./${u.pathname.substring(u.pathname.lastIndexOf('/') + 1)}`;
+    //   }
+    // });
 
     return ret;
   },
