@@ -1,9 +1,9 @@
 {
-  "name": "@adobe/aem-boilerplate",
+  "name": "rundisney",
   "private": true,
   "version": "1.3.0",
   "type": "module",
-  "description": "Starter project for Adobe Helix",
+  "description": "Edge Delivery Services project for rundisney.com",
   "scripts": {
     "lint:js": "eslint .",
     "lint:css": "stylelint \"blocks/**/*.css\" \"styles/*.css\"",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adobe/aem-boilerplate.git"
+    "url": "git+https://github.com/aemsites/rundisney"
   },
   "author": "Adobe",
   "license": "Apache License 2.0",
   "bugs": {
-    "url": "https://github.com/adobe/aem-boilerplate/issues"
+    "url": "https://github.com/aemsites/rundisney/issues"
   },
-  "homepage": "https://github.com/adobe/aem-boilerplate#readme",
+  "homepage": "https://github.com/aemsites/rundisney#readme",
   "devDependencies": {
     "@babel/eslint-parser": "7.27.0",
     "eslint": "8.57.1",
