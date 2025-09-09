@@ -2,7 +2,39 @@ import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
-const isDesktop = window.matchMedia('(min-width: 900px)');
+const isDesktop = window.matchMedia('(min-width: 1024px)');
+
+let hoverTimeout;
+
+/**
+ * Toggles all nav sections
+ * @param {Element} sections The container element
+ * @param {Boolean} expanded Whether the element should be expanded or collapsed
+ */
+function toggleAllNavSections(sections, expanded = false) {
+  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
+    section.setAttribute('aria-expanded', expanded);
+    // Also close nested dropdowns
+    section.querySelectorAll('.nav-nested-drop').forEach((nested) => {
+      nested.setAttribute('aria-expanded', false);
+    });
+  });
+}
+
+function openOnKeydown(e) {
+  const focused = document.activeElement;
+  const isNavDrop = focused.classList.contains('nav-drop') || focused.classList.contains('nav-nested-drop');
+  if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
+    e.preventDefault();
+    const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
+    if (focused.classList.contains('nav-drop')) {
+      toggleAllNavSections(focused.closest('.nav-sections'));
+      focused.setAttribute('aria-expanded', dropExpanded ? 'false' : 'true');
+    } else if (focused.classList.contains('nav-nested-drop')) {
+      focused.setAttribute('aria-expanded', dropExpanded ? 'false' : 'true');
+    }
+  }
+}
 
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
@@ -10,7 +42,6 @@ function closeOnEscape(e) {
     const navSections = nav.querySelector('.nav-sections');
     const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
     if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections);
       navSectionExpanded.focus();
     } else if (!isDesktop.matches) {
@@ -27,7 +58,6 @@ function closeOnFocusLost(e) {
     const navSections = nav.querySelector('.nav-sections');
     const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
     if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections, false);
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
@@ -36,30 +66,8 @@ function closeOnFocusLost(e) {
   }
 }
 
-function openOnKeydown(e) {
-  const focused = document.activeElement;
-  const isNavDrop = focused.className === 'nav-drop';
-  if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
-    const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
-    // eslint-disable-next-line no-use-before-define
-    toggleAllNavSections(focused.closest('.nav-sections'));
-    focused.setAttribute('aria-expanded', dropExpanded ? 'false' : 'true');
-  }
-}
-
 function focusNavSection() {
   document.activeElement.addEventListener('keydown', openOnKeydown);
-}
-
-/**
- * Toggles all nav sections
- * @param {Element} sections The container element
- * @param {Boolean} expanded Whether the element should be expanded or collapsed
- */
-function toggleAllNavSections(sections, expanded = false) {
-  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
-  });
 }
 
 /**
@@ -75,8 +83,9 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
   toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+
   // enable nav dropdown keyboard accessibility
-  const navDrops = navSections.querySelectorAll('.nav-drop');
+  const navDrops = navSections.querySelectorAll('.nav-drop, .nav-nested-drop');
   if (isDesktop.matches) {
     navDrops.forEach((drop) => {
       if (!drop.hasAttribute('tabindex')) {
@@ -93,14 +102,90 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 
   // enable menu collapse on escape keypress
   if (!expanded || isDesktop.matches) {
-    // collapse menu on escape press
     window.addEventListener('keydown', closeOnEscape);
-    // collapse menu on focus lost
     nav.addEventListener('focusout', closeOnFocusLost);
   } else {
     window.removeEventListener('keydown', closeOnEscape);
     nav.removeEventListener('focusout', closeOnFocusLost);
   }
+}
+
+function handleDropdownHover(navSection, shouldOpen) {
+  if (!isDesktop.matches) return; // Only apply hover on desktop
+
+  clearTimeout(hoverTimeout);
+
+  if (shouldOpen) {
+    hoverTimeout = setTimeout(() => {
+      toggleAllNavSections(navSection.closest('.nav-sections'));
+      navSection.setAttribute('aria-expanded', 'true');
+    }, 100); // Small delay to prevent accidental triggers
+  } else {
+    hoverTimeout = setTimeout(() => {
+      navSection.setAttribute('aria-expanded', 'false');
+    }, 200); // Longer delay when leaving to allow mouse travel to dropdown
+  }
+}
+
+function decorateNestedDropdowns(navSection) {
+  const subList = navSection.querySelector('ul');
+  if (!subList) return;
+
+  // Look for nested lists within the dropdown that aren't direct links
+  subList.querySelectorAll('li').forEach((item) => {
+    const nestedList = item.querySelector('ul');
+    const hasDirectLink = item.querySelector(':scope > a');
+
+    if (nestedList && !hasDirectLink) {
+      // This is a category/label with nested items - make it a sliding dropdown
+      item.classList.add('nav-nested-drop');
+      item.setAttribute('aria-expanded', 'false');
+      item.setAttribute('role', 'button');
+      item.setAttribute('tabindex', '0');
+
+      // Add click handler for both desktop and mobile
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Close other nested dropdowns at same level first
+        const parentDropdown = item.closest('[aria-expanded="true"]');
+        if (parentDropdown) {
+          parentDropdown.querySelectorAll('.nav-nested-drop[aria-expanded="true"]').forEach((drop) => {
+            if (drop !== item) {
+              drop.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+
+        // Toggle current dropdown
+        const expanded = item.getAttribute('aria-expanded') === 'true';
+        item.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      });
+
+      // Add keyboard support
+      item.addEventListener('keydown', (e) => {
+        if (e.code === 'Enter' || e.code === 'Space') {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Close other nested dropdowns at same level first
+          const parentDropdown = item.closest('[aria-expanded="true"]');
+          if (parentDropdown) {
+            parentDropdown.querySelectorAll('.nav-nested-drop[aria-expanded="true"]').forEach((drop) => {
+              if (drop !== item) {
+                drop.setAttribute('aria-expanded', 'false');
+              }
+            });
+          }
+
+          // Toggle current dropdown
+          const expanded = item.getAttribute('aria-expanded') === 'true';
+          item.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        }
+      });
+    }
+  });
 }
 
 /**
@@ -135,14 +220,35 @@ export default async function decorate(block) {
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
-        if (isDesktop.matches) {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
-      });
+      if (navSection.querySelector('ul')) {
+        navSection.classList.add('nav-drop');
+
+        // Decorate nested dropdowns
+        decorateNestedDropdowns(navSection);
+
+        // Add hover listeners for main dropdowns (desktop only)
+        navSection.addEventListener('mouseenter', () => handleDropdownHover(navSection, true));
+        navSection.addEventListener('mouseleave', () => handleDropdownHover(navSection, false));
+
+        // Keep click behavior for mobile and keyboard users
+        navSection.addEventListener('click', () => {
+          if (!isDesktop.matches) {
+            const expanded = navSection.getAttribute('aria-expanded') === 'true';
+            toggleAllNavSections(navSections);
+            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          }
+        });
+
+        // Add keyboard support
+        navSection.addEventListener('keydown', (e) => {
+          if (e.code === 'Enter' || e.code === 'Space') {
+            e.preventDefault();
+            const expanded = navSection.getAttribute('aria-expanded') === 'true';
+            toggleAllNavSections(navSections);
+            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          }
+        });
+      }
     });
   }
 
@@ -155,6 +261,7 @@ export default async function decorate(block) {
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
+
   // prevent mobile nav behavior on window resize
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
