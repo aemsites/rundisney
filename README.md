@@ -19,9 +19,9 @@ npm run lint
 
 ## Local development
 
-1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
-1. Start AEM Proxy: `aem up` (opens your browser at `http://localhost:3000`)
-1. Open the `rundisney` directory in your favorite IDE and start coding :)
+- Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
+- Start AEM Proxy: `aem up` (opens your browser at `http://localhost:3000`)
+- Open the `rundisney` directory in your favorite IDE and start coding :)
 
 ## Importing Content
-See https://github.com/aemsites/rundisney/tools/importer/README.md
+See https://github.com/aemsites/rundisney/blob/importer/tools/importer/README.md
