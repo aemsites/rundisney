@@ -8,4 +8,5 @@ helix-importer-ui
 *.bak
 .idea
 tools/importer/node_modules
+tools/importer/content
 
