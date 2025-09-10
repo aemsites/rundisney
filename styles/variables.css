@@ -1,43 +1,72 @@
 @import url('./palette.css');
 
 :root {
+  /** Site variables */
   --site-max-width: 1140px;
+  --nav-height: 64px;
+  --icon-size: 16px;
+  --icon-size-l: 24px;
+  --icon-size-xl: 32px;
+  --icon-size-xxl: 40px;
 
+  /** Color variables */
   --background-color: var(--white);
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
   --text-color: var(--navy);
   --link-color: var(--primary);
-  --link-hover-color: #1d3ecf;
+  --link-hover-color: var(--primary);
 
+  /** Font variables */
   --body-font-family: "InspireTWDC", "InspireTWDC-fallback", sans-serif;
   --heading-font-family: "InspireTWDC", "InspireTWDC-fallback", sans-serif;
+  --icon-font-family: "Pepmdx", sans-serif;
 
-  --body-font-size-m: 22px;
-  --body-font-size-s: 19px;
-  --body-font-size-xs: 17px;
+  /** Font size variables */
+  --body-font-size-xl: 1.25rem; /* 20px */
+  --body-font-size-l: 1.125rem; /* 18px */
+  --body-font-size-m: 1rem; /* 16px */
+  --body-font-size-s: 0.875rem; /* 14px */
+  --body-font-size-xs: 0.75rem; /* 12px */
 
-  --heading-font-size-xxl: 55px;
-  --heading-font-size-xl: 44px;
-  --heading-font-size-l: 34px;
-  --heading-font-size-m: 27px;
-  --heading-font-size-s: 24px;
-  --heading-font-size-xs: 22px;
+  /** Heading font size variables */
+  --heading-font-size-xxl: 2rem; /* 32px */
+  --heading-font-size-xl: 1.75rem; /* 28px */
+  --heading-font-size-l: 1.5rem; /* 24px */
+  --heading-font-size-m: 1.25rem; /* 20px */
+  --heading-font-size-s: 1.125rem; /* 18px */
+  --heading-font-size-xs: 1rem; /* 16px */
 
-  --nav-height: 64px;
+  /* Z-index variables */
+  --z-index-seabed: -10000;
+  --z-index-below: -100;
+  --z-index-default: 1;
+  --z-index-above: 100;
+  --z-index-nav: 600;
+  --z-index-modal: 800;
+  --z-index-popover: 900;
+  --z-index-tooltip: 1000;
+
+  /** Spacing Variables */
+  --spacing-xxxxs: 0.125rem; /* 2px */
+  --spacing-xxxs: 0.25rem; /* 4px */
+  --spacing-xxs: 0.5rem; /* 8px */
+  --spacing-xs: 0.75rem; /* 12px */
+  --spacing-s: 1rem; /* 16px */
+  --spacing-m: 1.5rem; /* 24px */
+  --spacing-l: 2rem; /* 32px */
+  --spacing-xl: 2.5rem; /* 40px */
+  --spacing-xxl: 3rem; /* 48px */
+  --spacing-xxxl: 3.5rem; /* 56px */
+  --spacing-xxxxl: 4rem; /* 64px */
+
 }
 
 @media (width >=1024px) {
   :root {
-    --body-font-size-m: 18px;
-    --body-font-size-s: 16px;
-    --body-font-size-xs: 14px;
-
-    --heading-font-size-xxl: 45px;
-    --heading-font-size-xl: 36px;
-    --heading-font-size-l: 28px;
-    --heading-font-size-m: 22px;
-    --heading-font-size-s: 20px;
-    --heading-font-size-xs: 18px;
+    --heading-font-size-xxl: 3rem; /* 48px */
+    --heading-font-size-xl: 2.5rem; /* 40px */
+    --heading-font-size-l: 2rem; /* 32px */
+    --heading-font-size-m: 1.5rem; /* 24px */
+    --heading-font-size-s: 1.25rem; /* 20px */
+    --heading-font-size-xs: 1rem; /* 16px */
   }
 }

@@ -1,3 +1,33 @@
 {
-  "extends": ["stylelint-config-standard"]
+  "extends": [
+    "stylelint-config-standard"
+  ],
+  "rules": {
+    "no-duplicate-selectors": true,
+
+    "color-hex-length": "short",
+    "custom-property-empty-line-before": null,
+    "declaration-empty-line-before": "never",
+    "rule-empty-line-before": [
+      "always-multi-line",
+      {
+        "except": [
+          "first-nested"
+        ],
+        "ignore": [
+          "after-comment"
+        ]
+      }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": [
+          "any-link"
+        ]
+      }
+    ],
+    "no-descending-specificity": null,
+    "selector-class-pattern": null
+  }
 }

@@ -1,10 +1,8 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { createElement, createIcon } from '../../utils/dom.js';
 
-// media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 1024px)');
-
-let hoverTimeout;
 
 /**
  * Toggles all nav sections
@@ -14,7 +12,6 @@ let hoverTimeout;
 function toggleAllNavSections(sections, expanded = false) {
   sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
     section.setAttribute('aria-expanded', expanded);
-    // Also close nested dropdowns
     section.querySelectorAll('.nav-nested-drop').forEach((nested) => {
       nested.setAttribute('aria-expanded', false);
     });
@@ -84,7 +81,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
 
-  // enable nav dropdown keyboard accessibility
   const navDrops = navSections.querySelectorAll('.nav-drop, .nav-nested-drop');
   if (isDesktop.matches) {
     navDrops.forEach((drop) => {
@@ -100,7 +96,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
     });
   }
 
-  // enable menu collapse on escape keypress
   if (!expanded || isDesktop.matches) {
     window.addEventListener('keydown', closeOnEscape);
     nav.addEventListener('focusout', closeOnFocusLost);
@@ -111,19 +106,55 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 }
 
 function handleDropdownHover(navSection, shouldOpen) {
-  if (!isDesktop.matches) return; // Only apply hover on desktop
-
-  clearTimeout(hoverTimeout);
+  if (!isDesktop.matches) return;
 
   if (shouldOpen) {
-    hoverTimeout = setTimeout(() => {
-      toggleAllNavSections(navSection.closest('.nav-sections'));
-      navSection.setAttribute('aria-expanded', 'true');
-    }, 100); // Small delay to prevent accidental triggers
+    toggleAllNavSections(navSection.closest('.nav-sections'));
+    navSection.setAttribute('aria-expanded', 'true');
+
+    const nestedDropdowns = navSection.querySelectorAll('.nav-nested-drop');
+
+    navSection.querySelectorAll('i').forEach((i) => {
+      i.classList.add('icon__norgie-closed');
+      i.classList.remove('icon__norgie-opened');
+    });
+
+    nestedDropdowns.forEach((dropdown, index) => {
+      if (index === 0) {
+        dropdown.setAttribute('aria-expanded', 'true');
+        dropdown.querySelector('i').classList.add('icon__norgie-opened');
+      }
+    });
   } else {
-    hoverTimeout = setTimeout(() => {
-      navSection.setAttribute('aria-expanded', 'false');
-    }, 200); // Longer delay when leaving to allow mouse travel to dropdown
+    navSection.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function handleDropdownToggle(e, item, subList) {
+  if (e.type === 'click' || e.code === 'Enter' || e.code === 'Space') {
+    if (e.target.tagName !== 'A') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    const parentDropdown = item.closest('[aria-expanded="true"]');
+    if (parentDropdown) {
+      parentDropdown.querySelectorAll('.nav-nested-drop[aria-expanded="true"]').forEach((drop) => {
+        if (drop !== item) {
+          drop.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    const expanded = item.getAttribute('aria-expanded') === 'true';
+    item.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+
+    subList.querySelectorAll('i').forEach((i) => {
+      i.classList.add('icon__norgie-closed');
+      i.classList.remove('icon__norgie-opened');
+    });
+
+    item.querySelector('i').classList.toggle('icon__norgie-opened', !expanded);
   }
 }
 
@@ -131,59 +162,33 @@ function decorateNestedDropdowns(navSection) {
   const subList = navSection.querySelector('ul');
   if (!subList) return;
 
-  // Look for nested lists within the dropdown that aren't direct links
   subList.querySelectorAll('li').forEach((item) => {
     const nestedList = item.querySelector('ul');
     const hasDirectLink = item.querySelector(':scope > a');
 
-    if (nestedList && !hasDirectLink) {
-      // This is a category/label with nested items - make it a sliding dropdown
-      item.classList.add('nav-nested-drop');
-      item.setAttribute('aria-expanded', 'false');
-      item.setAttribute('role', 'button');
-      item.setAttribute('tabindex', '0');
+    if (nestedList) {
+      nestedList.classList.add('nav-nested-list');
 
-      // Add click handler for both desktop and mobile
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+      if (!hasDirectLink) {
+        item.classList.add('nav-nested-drop');
+        item.setAttribute('aria-expanded', 'false');
+        item.setAttribute('role', 'button');
+        item.setAttribute('tabindex', '0');
+        item.prepend(createIcon('norgie-closed'));
 
-        // Close other nested dropdowns at same level first
-        const parentDropdown = item.closest('[aria-expanded="true"]');
-        if (parentDropdown) {
-          parentDropdown.querySelectorAll('.nav-nested-drop[aria-expanded="true"]').forEach((drop) => {
-            if (drop !== item) {
-              drop.setAttribute('aria-expanded', 'false');
-            }
-          });
-        }
-
-        // Toggle current dropdown
-        const expanded = item.getAttribute('aria-expanded') === 'true';
-        item.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-      });
-
-      // Add keyboard support
-      item.addEventListener('keydown', (e) => {
-        if (e.code === 'Enter' || e.code === 'Space') {
-          e.preventDefault();
-          e.stopPropagation();
-
-          // Close other nested dropdowns at same level first
-          const parentDropdown = item.closest('[aria-expanded="true"]');
-          if (parentDropdown) {
-            parentDropdown.querySelectorAll('.nav-nested-drop[aria-expanded="true"]').forEach((drop) => {
-              if (drop !== item) {
-                drop.setAttribute('aria-expanded', 'false');
-              }
-            });
+        nestedList.querySelectorAll('a').forEach((a) => {
+          const dateMatch = a.textContent.match(/\([^)]+\)/);
+          if (dateMatch) {
+            const dateText = dateMatch[0];
+            const dateSpan = createElement('span', { class: 'date' }, dateText);
+            a.innerHTML = a.innerHTML.replace(dateText, '');
+            a.append(dateSpan);
           }
+        });
 
-          // Toggle current dropdown
-          const expanded = item.getAttribute('aria-expanded') === 'true';
-          item.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
-      });
+        item.addEventListener('click', (e) => handleDropdownToggle(e, item, subList));
+        item.addEventListener('keydown', (e) => handleDropdownToggle(e, item, subList));
+      }
     }
   });
 }
@@ -193,7 +198,6 @@ function decorateNestedDropdowns(navSection) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
   const fragment = await loadFragment(navPath);
@@ -220,17 +224,32 @@ export default async function decorate(block) {
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) {
-        navSection.classList.add('nav-drop');
+      const buttonContainers = navSection.querySelectorAll('.button-container');
 
-        // Decorate nested dropdowns
+      buttonContainers.forEach((buttonContainer) => {
+        const button = buttonContainer.querySelector('a');
+        if (button) {
+          button.classList.remove('button');
+          buttonContainer.parentNode.replaceChild(button, buttonContainer);
+        }
+      });
+
+      navSection.querySelectorAll('p').forEach((p) => {
+        const span = createElement('span', {}, p.textContent);
+        p.replaceWith(span);
+      });
+
+      const hasSubmenu = navSection.querySelector('ul');
+      if (hasSubmenu) {
+        navSection.classList.add('nav-drop');
+        navSection.setAttribute('tabindex', '-1');
+        navSection.setAttribute('aria-expanded', 'false');
+
         decorateNestedDropdowns(navSection);
 
-        // Add hover listeners for main dropdowns (desktop only)
         navSection.addEventListener('mouseenter', () => handleDropdownHover(navSection, true));
         navSection.addEventListener('mouseleave', () => handleDropdownHover(navSection, false));
 
-        // Keep click behavior for mobile and keyboard users
         navSection.addEventListener('click', () => {
           if (!isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
@@ -239,7 +258,6 @@ export default async function decorate(block) {
           }
         });
 
-        // Add keyboard support
         navSection.addEventListener('keydown', (e) => {
           if (e.code === 'Enter' || e.code === 'Space') {
             e.preventDefault();
@@ -248,11 +266,13 @@ export default async function decorate(block) {
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
           }
         });
+      } else {
+        navSection.removeAttribute('aria-expanded');
+        navSection.classList.add('no-submenu');
       }
     });
   }
 
-  // hamburger for mobile
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
   hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
@@ -262,7 +282,6 @@ export default async function decorate(block) {
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
 
-  // prevent mobile nav behavior on window resize
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
 

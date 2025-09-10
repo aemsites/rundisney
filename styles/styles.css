@@ -2,6 +2,7 @@
 @import url('./typography.css');
 @import url('./section.css');
 @import url('./button.css');
+@import url('./icons.css');
 
 body {
   display: none;
@@ -49,12 +50,12 @@ pre {
 pre {
   padding: 16px;
   border-radius: 8px;
-  background-color: var(--light-color);
+  background-color: var(--gray);
   overflow-x: auto;
   white-space: pre;
 }
 
-main>div {
+main > div {
   margin: 40px 16px;
 }
 
@@ -65,7 +66,6 @@ button {
   font: inherit;
 }
 
-/* links */
 a:any-link {
   color: var(--link-color);
   text-decoration: none;
@@ -84,12 +84,15 @@ main img {
 }
 
 .icon {
-  display: inline-block;
-  height: 24px;
-  width: 24px;
+  width: var(--icon-size);
+  height: var(--icon-size);
 }
 
-.icon img {
-  height: 100%;
-  width: 100%;
+.icon, [class*="icon__"] {
+  font-family: Pepmdx, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
