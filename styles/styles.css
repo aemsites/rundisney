@@ -3,6 +3,7 @@
 @import url('./section.css');
 @import url('./button.css');
 @import url('./icons.css');
+@import url('./utils.css');
 
 body {
   display: none;
@@ -84,11 +85,23 @@ main img {
 }
 
 .icon {
-  width: var(--icon-size);
-  height: var(--icon-size);
+  font-size: var(--icon-size);
+  display: inline-block;
+
+  &.icon-l {
+    font-size: var(--icon-size-l);
+  }
+
+  &.icon-xl {
+    font-size: var(--icon-size-xl);
+  }
+  
+  &.icon-xxl {
+    font-size: var(--icon-size-xxl);
+  }
 }
 
-.icon, [class*="icon__"] {
+[class*="icon__"] {
   font-family: Pepmdx, sans-serif;
   font-style: normal;
   font-weight: 400;
