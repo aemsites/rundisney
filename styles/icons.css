@@ -342,10 +342,6 @@
 	content: "\e0cd"
 }
 
-.icon__special-offers::before {
-	content: "\e0ce"
-}
-
 .icon__booking-rooms-packages::before {
 	content: "\e0cf"
 }
@@ -826,10 +822,6 @@
 	content: "\e1a4"
 }
 
-.icon__mobile-order-food::before {
-	content: "\e1a5"
-}
-
 .icon__adult-table-service::before {
 	content: "\e1a6"
 }
@@ -1156,10 +1148,6 @@
 
 .icon__fully-equipped-kitchen::before {
 	content: "\e22a"
-}
-
-.icon__location-pin::before {
-	content: "\e22b"
 }
 
 .icon__expectant-mothers::before {
@@ -1625,12 +1613,6 @@
 
 .icon__next::before {
 	content: "\e30c"
-}
-
-.icon__expand-show-more::before {
-	content: "\e30c";
-	-webkit-transform: rotate(90deg);
-	transform: rotate(90deg)
 }
 
 .icon__prev::before,
