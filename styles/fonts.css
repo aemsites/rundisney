@@ -1,77 +1,35 @@
 @font-face {
   font-family: InspireTWDC;
-  src: url("/fonts/InspireTWDC-Light.woff2") format("woff2");
-  font-weight: 200;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: InspireTWDC;
-  src: url("/fonts/InspireTWDC-Roman.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: InspireTWDC;
-  src: url("/fonts/InspireTWDC-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: InspireTWDC;
-  src: url("/fonts/inspire/InspireTWDC-Heavy.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: InspireTWDC;
-  src: url("/fonts/inspire/InspireTWDC-Black.woff2") format("woff2");
-  font-weight: 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: InspireTWDCLight;
   src: url("/fonts/inspire/InspireTWDC-Light.woff2") format("woff2");
   font-weight: 200;
   font-style: normal;
 }
 
 @font-face {
-  font-family: InspireTWDCRoman;
+  font-family: InspireTWDC;
   src: url("/fonts/inspire/InspireTWDC-Roman.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: InspireTWDCMedium;
+  font-family: InspireTWDC;
   src: url("/fonts/inspire/InspireTWDC-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: InspireTWDCHeavy;
-  src: url("/fonts/inspire/InspireTWDC-Heavy.woff2") format("woff2");
+  font-family: InspireTWDC;
+  src: url("/fonts/inspire/inspire/InspireTWDC-Heavy.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: InspireTWDCBlack;
+  font-family: InspireTWDC;
   src: url("/fonts/inspire/InspireTWDC-Black.woff2") format("woff2");
   font-weight: 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: InspireTWDCBook;
-  src: url("/fonts/inspire/InspireTWDC-Roman.woff2") format("woff2");
-  font-weight: 400;
   font-style: normal;
 }
 
