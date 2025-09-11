@@ -47,7 +47,7 @@ header {
       }
 
       .nav-sections {
-        overflow-y: scroll;
+        overflow: scroll hidden;
         height: 100%;
       }
     }
@@ -63,7 +63,7 @@ header {
         overflow: visible;
 
         .nav-sections {
-          overflow-y: initial;
+          overflow: unset;
           height: unset;
         }
       }

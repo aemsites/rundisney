@@ -1,4 +1,4 @@
-import { getMetadata, decorateIcons } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons, decorateButtons } from '../../scripts/aem.js';
 import { createElement, createIcon } from '../../utils/dom.js';
 
 /**
@@ -97,12 +97,17 @@ export default async function decorate(block) {
     const footer = createElement('div', {}, html);
 
     const footerLinks = footer.querySelector('.footer-links');
+    const shouldShowNewsletter = getMetadata('newsletter').toLowerCase() === 'true';
+
+    if (shouldShowNewsletter) {
+      block.classList.add('show-newsletter');
+    }
 
     if (footerLinks) {
       processFooterLinks(footerLinks);
     }
-
     decorateIcons(footer);
+    decorateButtons(footer);
     block.append(footer);
   }
 }

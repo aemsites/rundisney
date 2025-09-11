@@ -2,20 +2,55 @@ footer {
   background-color: var(--background-color);
   border-top: 1px solid var(--light-gray);
   font-size: var(--body-font-size-s);
-  padding: 0 var(--spacing-m);
-
-  .footer > div {
-    margin: auto;
-    max-width: var(--site-max-width);
-  }
 
   p {
     margin: 0;
+  }
+
+  .newsletter {
+    display: none;
+    border-bottom: 1px solid var(--light-gray);
+    padding: var(--spacing-m) 0 var(--spacing-xs) 0;
+    font-size: var(--body-font-size-m);
+    background: var(--light-gray-2);
+
+    > div {
+      max-width: 50%;
+      margin: 0 auto;
+    }
+
+    > div:first-child {
+      text-align: center;
+      margin-bottom: var(--spacing-m);
+    }
+
+    > div:last-child {
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      flex-direction: column;
+      gap: var(--spacing-s);
+
+      @media (width >= 1024px) {
+       flex-direction: row;
+      }
+    }
+
+    :is(h1, h2, h3, h4, h5, h6) {
+      margin-top: 0;
+    }
+  }
+
+  .footer.show-newsletter {
+    .newsletter {
+      display: block;
+    }
   }
 }
 
 .footer-links {
   border-bottom: 1px solid var(--light-gray);
+  padding: 0 var(--spacing-m);
   
   @media (width >= 1024px) {
     padding-bottom: var(--spacing-m);
@@ -24,8 +59,8 @@ footer {
 
 .footer-columns {
   display: none;
-  gap: var(--spacing-m);
-  margin-top: var(--spacing-m);
+  max-width: var(--site-max-width);
+  margin: 0 auto;
 
   ul {
     list-style: none;
@@ -43,8 +78,10 @@ footer {
   }
 
   @media (width >= 1024px) {
+    padding-top: var(--spacing-m);
     display: flex;
     justify-content: space-between;
+    gap: var(--spacing-m);
   }
 
   &.expanded {
@@ -53,6 +90,10 @@ footer {
 
   > div:last-child > ul:last-child {
     display: flex;
+  }
+
+  h6 {
+    margin-top: 0;
   }
 }
 
@@ -94,6 +135,9 @@ footer {
   text-align: center;
   font-size: var(--body-font-size-xs);
   margin-bottom: var(--spacing-m);
+  max-width: var(--site-max-width);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .footer-legal ul {
