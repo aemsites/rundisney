@@ -87,6 +87,7 @@ main img {
 .icon {
   font-size: var(--icon-size);
   display: inline-block;
+  vertical-align: middle;
 
   &.icon-l {
     font-size: var(--icon-size-l);

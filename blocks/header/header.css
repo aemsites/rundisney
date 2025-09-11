@@ -69,6 +69,10 @@ header {
       }
     }
 
+    @media (width >=1140px) {
+      padding: 0;
+    }
+
     a:any-link {
       color: currentcolor;
 

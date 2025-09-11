@@ -1,20 +1,123 @@
 footer {
-  background-color: var(--gray);
+  background-color: var(--background-color);
+  border-top: 1px solid var(--light-gray);
+  font-size: var(--body-font-size-s);
+  padding: 0 var(--spacing-m);
+
+  .footer > div {
+    margin: auto;
+    max-width: var(--site-max-width);
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.footer-links {
+  border-bottom: 1px solid var(--light-gray);
+  
+  @media (width >= 1024px) {
+    padding-bottom: var(--spacing-m);
+  }
+}
+
+.footer-columns {
+  display: none;
+  gap: var(--spacing-m);
+  margin-top: var(--spacing-m);
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: var(--spacing-m);
+
+    li {
+      margin-bottom: var(--spacing-xxs);
+
+      a {
+        color: var(--text-color);
+      }
+    }
+  }
+
+  @media (width >= 1024px) {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &.expanded {
+    display: grid;
+  }
+
+  > div:last-child > ul:last-child {
+    display: flex;
+  }
+}
+
+.footer-mobile-toggle {
+  background: none;
+  border: 2px solid var(--navy);
+  color: var(--text-color);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-transform: uppercase;
+  text-align: left;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+  }
+
+  &:focus {
+    outline: 2px solid var(--link-color);
+    outline-offset: 2px;
+  }
+
+  @media (width >= 1024px) {
+    display: none;
+  }
+
+  @media (width < 1024px) {
+    display: block;
+  }
+}
+
+.footer-legal {
+  text-align: center;
   font-size: var(--body-font-size-xs);
+  margin-bottom: var(--spacing-m);
 }
 
-footer .footer>div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
-}
+.footer-legal ul {
+  margin-top: var(--spacing-m);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-m);
 
-footer .footer p {
-  margin: 0;
-}
 
-@media (width >=1024px) {
-  footer .footer>div {
-    padding: 40px 32px 24px;
+  @media (width >= 1024px) {
+    flex-direction: row;
+    gap: var(--spacing-m);
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    color: var(--text-color);
   }
 }
