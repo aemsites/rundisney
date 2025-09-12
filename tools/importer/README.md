@@ -2,8 +2,6 @@
 
 This directory contains tools for importing content from the runDisney website.
 
-## Scripts
-
 ## General Flow
 rundisney.com does not get consumed by the AEM Importer as it's a SPA and they also probably have WAF/CSP blocking things. We use puppeteer with a local proxy server to pre-render pages that the importer can easily consume.
 
@@ -32,27 +30,16 @@ npm run process-crawl-report my-crawl-report.xlsx
 npm run process-crawl-report crawl_report.xlsx output-urls.txt
 ```
 
-**What it does:**
-1. Extracts URLs from Excel file's shared strings
-2. Converts `https://www.rundisney.com` URLs to `http://localhost:4001`
-3. Removes trailing slashes to prevent folder/index.html structure
-4. Removes duplicates and sorts URLs
-5. Outputs clean list ready for bulk import
-
 ### Proxy Server
 
-Local proxy server that pre-renders runDisney SPA pages for import.
+Local proxy server that pre-renders runDisney pages and scrolls down to the bottom to make sure all lazy loaded assets are included.
+
+The importer UI can then easily consume paths on the proxy server.
 
 **Usage:**
 ```bash
 npm run import-proxy-server
 ```
-
-**Features:**
-- Pre-renders Angular SPA pages using Puppeteer
-- Caches results for 5 minutes
-- Handles asset requests by redirecting to original site
-- Path-based routing: `/about` → `https://www.rundisney.com/about`
 
 ## Workflow
 1. **Crawl the site** and download `crawl_report.xlsx` to `tools/importer/`
@@ -70,7 +57,3 @@ npm run import-proxy-server
    npm run import-proxy-server
    ```
 5. **Use bulk import** with the generated `bulk_import_urls.txt`
-
-## Notes
-- The proxy server only processes HTML pages, not assets
-- Asset requests are redirected to the original rundisney.com site

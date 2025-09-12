@@ -12,6 +12,10 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
+const handleSectionMetadata = (main) => {
+  const sectionMetadata = main.querySelectorAll('.featuredEventsContainer');
+};
+
 const handleBlogPosts = (main, metadata) => {
   if (!main.querySelector('#blogDetail')) {
     return;
@@ -109,6 +113,7 @@ export default {
     WebImporter.rules.convertIcons(main, document);
 
     handleBlogPosts(main, metadata);
+    handleSectionMetadata(main);
 
     const ret = [];
 
