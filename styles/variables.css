@@ -8,6 +8,8 @@
   --icon-size-l: 24px;
   --icon-size-xl: 32px;
   --icon-size-xxl: 40px;
+  --icon-size-xxxl: 48px;
+  --icon-size-xxxxl: 56px;
 
   /** Color variables */
   --background-color: var(--white);

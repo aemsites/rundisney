@@ -3,13 +3,21 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   grid-gap: 24px;
 }
 
 .cards > ul > li {
-  border: 1px solid #dadada;
   background-color: var(--background-color);
+  text-align: center;
+
+  :is(h3, h4, h5, h6) {
+    font-size: var(--heading-font-size-s);
+  }
+
+  i {
+  font-size: var(--icon-size-xxxxl);
+  }
 }
 
 .cards .cards-card-body {

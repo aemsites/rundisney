@@ -100,6 +100,14 @@ main img {
   &.size-xxl {
     font-size: var(--icon-size-xxl);
   }
+
+  &.size-xxxl {
+    font-size: var(--icon-size-xxxl);
+  }
+
+  &.size-xxxxl {
+    font-size: var(--icon-size-xxxxl);
+  }
 }
 
 [class*="icon__"] {
