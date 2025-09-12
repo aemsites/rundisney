@@ -50,7 +50,8 @@ const handleBlogPosts = (main, metadata) => {
   const date = main.querySelector('.authorDescription .date').textContent;
   const categories = [...main.querySelectorAll('.categories .media-body a')]
     .map((a) => a.textContent.trim().replace(/\s*,\s*$/, ''))
-    .filter((cat) => cat.length > 0).join(', ');
+    .filter((cat) => cat.length > 0)
+    .map((cat) => cat.toLowerCase().replace(/\s+/g, '-'));
 
   metadata.author = authorName;
   metadata.date = date;
@@ -59,9 +60,9 @@ const handleBlogPosts = (main, metadata) => {
   const metadataTable = main.querySelector(':scope > table');
 
   const metadataTableRows = [
-    ['Author', authorName],
+    ['Author', `authors/${authorName}`],
     ['Date', date],
-    ['Tags', categories],
+    ['Tags', categories.map((cat) => `categories/${cat}`).join(', ')],
     ['Template', 'blog-post']
   ];
 

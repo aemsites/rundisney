@@ -125,6 +125,10 @@
       padding: var(--spacing-m);
 
       @media (width >=1024px) {
+        margin-top: 0;
+      }
+
+      @media (width >=1024px) {
         border-top: 0;
       }
 
