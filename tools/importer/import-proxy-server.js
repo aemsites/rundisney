@@ -100,6 +100,30 @@ async function prerenderPage(targetUrl) {
       page.waitForSelector('article', { timeout: 15000 }).catch(() => null),
     ]);
 
+    await page.evaluate(async () => {
+      await new Promise((resolve) => {
+        let totalHeight = 0;
+        const distance = 100;
+        const timer = setInterval(() => {
+          const scrollHeight = document.body.scrollHeight;
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+
+          if (totalHeight >= scrollHeight) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 100);
+      });
+    });
+
+    await page.waitForFunction(() => {
+      const images = Array.from(document.querySelectorAll('img'));
+      return images.every(img => img.complete || img.naturalHeight !== 0);
+    }, { timeout: 10000 }).catch(() => {
+      console.log('Some images may have failed to load.')
+    });
+
     await new Promise((resolve) => {
       setTimeout(resolve, 5000);
     });

@@ -302,12 +302,32 @@ function decorateNestedDropdowns(navSection) {
         item.prepend(createIcon('norgie-closed'));
 
         nestedList.querySelectorAll('a').forEach((a) => {
+          const span = createElement('span', { class: 'label' }, a.textContent);
+          const img = a.querySelector('img');
+
+          a.innerHTML = '';
+          a.append(span);
+          if (img) {
+            const imgDiv = createElement('div', { class: 'img-wrapper' }, img.outerHTML);
+            imgDiv.append(img);
+            img.remove();
+            a.append(imgDiv);
+            a.append(span);
+          }
           const dateMatch = a.textContent.match(/\([^)]+\)/);
+
           if (dateMatch) {
             const dateText = dateMatch[0];
             const dateSpan = createElement('span', { class: 'date' }, dateText);
             a.innerHTML = a.innerHTML.replace(dateText, '');
             a.append(dateSpan);
+
+            a.querySelector('.label').remove();
+            a.querySelector('.date').remove();
+
+            const div = createElement('div', { class: 'label-date-wrapper' }, [span, dateSpan]);
+
+            a.append(div);
           }
 
           a.setAttribute('tabindex', '0');
@@ -434,7 +454,7 @@ export default async function decorate(block) {
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
   hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-      <span class="icon icon-l icon__menu-global-nav"></span>
+      <span class="icon size-l icon__menu-global-nav"></span>
     </button>`;
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
   nav.prepend(hamburger);

@@ -89,15 +89,15 @@ main img {
   display: inline-block;
   vertical-align: middle;
 
-  &.icon-l {
+  &.size-l {
     font-size: var(--icon-size-l);
   }
 
-  &.icon-xl {
+  &.size-xl {
     font-size: var(--icon-size-xl);
   }
   
-  &.icon-xxl {
+  &.size-xxl {
     font-size: var(--icon-size-xxl);
   }
 }

@@ -12,6 +12,74 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
+const handleBlogPosts = (main, metadata) => {
+  if (!main.querySelector('#blogDetail')) {
+    return;
+  }
+
+  const blogFilter = main.querySelector('.filterBlog');
+
+  if (blogFilter) {
+    const blogFilterBlock = WebImporter.Blocks.createBlock(document, {
+      name: 'Blog Filter',
+      cells: [],
+    });
+
+    const featuredBlogsBlock = WebImporter.Blocks.createBlock(document, {
+      name: 'Featured Blogs',
+      cells: [],
+    });
+
+    const sectionBreak = document.createElement('hr');
+    blogFilter.before(sectionBreak);
+    blogFilter.replaceWith(featuredBlogsBlock);
+    featuredBlogsBlock.after(blogFilterBlock);
+  }
+
+  const heroImg = main.querySelector('.blogDetailCoverPhoto');
+  if (heroImg) {
+    heroImg.after(document.createElement('hr'));
+  }
+  
+  const author = main.querySelector('.authorName').textContent.trim();
+  const authorName = author.replace('by ', '');
+  const date = main.querySelector('.authorDescription .date').textContent;
+  const categories = [...main.querySelectorAll('.categories .media-body a')]
+    .map((a) => a.textContent.trim().replace(/\s*,\s*$/, ''))
+    .filter((cat) => cat.length > 0).join(', ');
+
+  metadata.author = authorName;
+  metadata.date = date;
+  metadata.categories = categories;
+
+  const metadataTable = main.querySelector(':scope > table');
+
+  const metadataTableRows = [
+    ['Author', authorName],
+    ['Date', date],
+    ['Tags', categories],
+    ['Template', 'blog-post']
+  ];
+
+  metadataTableRows.forEach((row) => {
+    const rowEl = document.createElement('tr');
+    const labelTd = document.createElement('td');
+    labelTd.textContent = row[0];
+    rowEl.appendChild(labelTd);
+    const valueTd = document.createElement('td');
+    valueTd.textContent = row[1];
+    rowEl.appendChild(valueTd);
+
+    metadataTable.appendChild(rowEl);
+  });
+
+  WebImporter.DOMUtils.remove(main, [
+    '.blogDetailStayConnected',
+    '.blogDetailByline',
+    '#blogDetail .asTileFeaturedList',
+  ]);
+};
+
 export default {
   /**
    * Apply DOM operations to the provided document and return
@@ -26,12 +94,9 @@ export default {
     // eslint-disable-next-line no-unused-vars
     document, url, html, params,
   }) => {
-    // const HOSTNAME = new URL(params.originalURL).origin;
-    // define the main element: the one that will be transformed to Markdown
     const main = document.querySelector('#mainBody > div > section#page-content .contentSection')
       || document.querySelector('main')
       || document.body;
-    console.log(main);
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
       'iframe',
@@ -39,10 +104,11 @@ export default {
     ]);
 
     const metadata = WebImporter.rules.createMetadata(main, document);
-    console.log(metadata);
     WebImporter.rules.transformBackgroundImages(main, document);
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
     WebImporter.rules.convertIcons(main, document);
+
+    handleBlogPosts(main, metadata);
 
     const ret = [];
 
@@ -57,27 +123,10 @@ export default {
         .replace(/[^a-z0-9/]/gm, '-');
     })(url);
 
-    // multi output import
-
-    // first, the main content
     ret.push({
       element: main,
       path,
     });
-
-    // main.querySelectorAll('img').forEach((img) => {
-    //   const { src } = img;
-    //   if (src) {
-    //     const u = new URL(src);
-    //     // then, all images
-    //     ret.push({
-    //       from: src,
-    //       path: u.pathname,
-    //     });
-    //     // adjust the src to be relative to the current page
-    //     img.src = `./${u.pathname.substring(u.pathname.lastIndexOf('/') + 1)}`;
-    //   }
-    // });
 
     return ret;
   },
