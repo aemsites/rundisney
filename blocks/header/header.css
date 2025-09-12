@@ -242,6 +242,8 @@ header {
               border-top: 0;
               padding-left: var(--spacing-l);
               margin-top: var(--spacing-s);
+              display: flex;
+              align-items: flex-start;
             }
           }
         }
@@ -465,7 +467,7 @@ header {
             &:has(img) {
               img {
                 margin-right: var(--spacing-xxs);
-                max-width: 30px;
+                max-width: 40px;
                 height: auto;
                 vertical-align: middle;
               }

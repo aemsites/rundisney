@@ -38,6 +38,6 @@ const createElement = (tagName, props, html) => {
   return elem;
 };
 
-const createIcon = (iconName) => createElement('i', { class: [`icon__${iconName}`, 'icon'] });
+const createIcon = (iconName, size) => createElement('i', { class: [`icon__${iconName}`, 'icon', ...(size ? [`size-${size}`] : [])] });
 
 export { createElement, createIcon };
