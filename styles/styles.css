@@ -56,7 +56,7 @@ pre {
   white-space: pre;
 }
 
-main > div {
+main>div {
   margin: 40px 16px;
 }
 
@@ -96,7 +96,7 @@ main img {
   &.size-xl {
     font-size: var(--icon-size-xl);
   }
-  
+
   &.size-xxl {
     font-size: var(--icon-size-xxl);
   }
@@ -109,4 +109,20 @@ main img {
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: var(--z-index-tooltip);
+  display: none;
+  max-width: 276px;
+  padding: var(--spacing-xs);
+  text-align: left;
+  white-space: normal;
+  background-color: var(--white);
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+  border: 1px solid rgb(0 0 0 / 20%);
+  border-radius: 6px;
+  box-shadow: 0 5px 10px rgb(0 0 0 / 20%);
 }

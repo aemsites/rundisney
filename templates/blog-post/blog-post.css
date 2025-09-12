@@ -72,12 +72,43 @@
         }
       }
 
-      & .share-button {
+      & .share {
         display: flex;
         align-items: center;
 
+        :is(h5, h6, p) {
+          font-weight: 400;
+          margin: 0 var(--spacing-xxxs);
+        }
+      }
+
+      & .share-button {
+        display: flex;
+        align-items: center;
+        background: none;
+        border: 0;
+        color: var(--text-color);
+        text-decoration: none;
+        cursor: pointer;
+        position: relative;
+        gap: var(--spacing-xxxs);
+      }
+
+      & .share-tooltip {
+        display: none;
+        width: 8rem;
+        right: 0;
+        top: var(--spacing-l);
+        font-size: var(--body-font-size-l);
+
         i {
-          padding-right: var(--spacing-xxxs);
+          font-size: var(--icon-size-l);
+          margin-right: var(--spacing-xxxs);
+        }
+        
+        &.visible {
+          display: flex;
+          flex-direction: column;
         }
       }
     }
