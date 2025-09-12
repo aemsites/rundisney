@@ -65,16 +65,33 @@ export default function decorateBlogPostTemplate() {
     shareButton.setAttribute('aria-expanded', shareButton.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
   });
 
-  const postCategoriesWrapper = main.querySelector('.post-categories-wrapper');
+  const postWrapper = main.querySelector('.default-content-wrapper');
   const tags = getMetadata('article:tag');
+  const postTags = tags.split(',').map((tag) => tag.trim());
 
-  if (postCategoriesWrapper) {
+  if (postWrapper) {
+    // TODO: temporary measure to remove categories coming
+    // through as content until we remove from importer and import all posts again
+    const categoryLink = postWrapper.querySelector('a[href*="/blog/category/"]');
+
+    if (categoryLink) {
+      categoryLink.closest('p').remove();
+    }
+
     const categoriesElement = createElement('div', { class: 'post-categories' }, [
       createElement('span', { class: 'categories-label' }, 'Categories:'),
-      createElement('span', {}, tags),
+      createElement('div', {}, postTags.map((tag, index) => {
+        const tagLink = createElement('a', { href: `/blog?category=${tag.replace(/\s+/g, '-').toLowerCase()}`, title: `View all posts in ${tag}` }, tag);
+
+        if (index < postTags.length - 1) {
+          return [tagLink, createElement('span', {}, ', ')];
+        }
+
+        return tagLink;
+      }).flat()),
     ]);
 
-    postCategoriesWrapper.append(categoriesElement);
+    postWrapper.append(categoriesElement);
   }
 
   hero.append(blogPostInfo);
