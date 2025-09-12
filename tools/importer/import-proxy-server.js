@@ -65,7 +65,6 @@ const cacheAndServe = (cacheKey, result) => {
     ...COMMON_HEADERS.NO_CACHE,
     'X-Rendered-By': 'rundisney-content-import-proxy',
     'X-Original-Url': result.originalUrl,
-    'X-Page-Title': result.title,
     'X-Content-Quality': result.isRichContent ? 'rich' : 'basic',
     'X-Cache-Hit': 'false',
   };
