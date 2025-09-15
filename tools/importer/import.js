@@ -87,6 +87,16 @@ const handleBlogPosts = (main, metadata) => {
   ]);
 };
 
+const handleLinks = (main) => {
+  const links = main.querySelectorAll('a');
+
+  links.forEach((link) => {
+    link.href = link.href
+      .replace(/^https?:\/\/(www\.)?rundisney\.com(.*)/, 'https://main--rundisney--da-pilot.aem.page$2')
+      .replace(/\/$/, '');
+  });
+};
+
 export default {
   /**
    * Apply DOM operations to the provided document and return
@@ -116,6 +126,7 @@ export default {
     WebImporter.rules.convertIcons(main, document);
 
     handleBlogPosts(main, metadata);
+    handleLinks(main);
     handleSectionMetadata(main);
 
     const ret = [];
