@@ -34,10 +34,11 @@ const handleBlogPosts = (main, metadata) => {
       cells: [],
     });
 
-    const sectionBreak = document.createElement('hr');
-    blogFilter.before(sectionBreak);
+    blogFilter.before(document.createElement('hr'));
     blogFilter.replaceWith(featuredBlogsBlock);
-    featuredBlogsBlock.after(blogFilterBlock);
+    const hr = document.createElement('hr');
+    featuredBlogsBlock.after(hr);
+    hr.after(blogFilterBlock);
   }
 
   const heroImg = main.querySelector('.blogDetailCoverPhoto');
@@ -82,6 +83,7 @@ const handleBlogPosts = (main, metadata) => {
     '.blogDetailStayConnected',
     '.blogDetailByline',
     '#blogDetail .asTileFeaturedList',
+    '.categories',
   ]);
 };
 

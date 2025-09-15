@@ -70,14 +70,6 @@ export default function decorateBlogPostTemplate() {
   const postTags = tags.split(',').map((tag) => tag.trim());
 
   if (postWrapper) {
-    // TODO: temporary measure to remove categories coming
-    // through as content until we remove from importer and import all posts again
-    const categoryLink = postWrapper.querySelector('a[href*="/blog/category/"]');
-
-    if (categoryLink) {
-      categoryLink.closest('p').remove();
-    }
-
     const categoriesElement = createElement('div', { class: 'post-categories' }, [
       createElement('span', { class: 'categories-label' }, 'Categories:'),
       createElement('div', {}, postTags.map((tag, index) => {
