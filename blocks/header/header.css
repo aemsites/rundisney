@@ -244,6 +244,10 @@ header {
               margin-top: var(--spacing-s);
               display: flex;
               align-items: flex-start;
+
+              &.no-date {
+                align-items: center;
+              }
             }
           }
         }

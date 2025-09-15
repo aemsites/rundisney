@@ -302,38 +302,34 @@ function decorateNestedDropdowns(navSection) {
         item.prepend(createIcon('norgie-closed'));
 
         nestedList.querySelectorAll('a').forEach((a) => {
-          const span = createElement('span', { class: 'label' }, a.textContent);
-          const img = a.querySelector('img');
+          const listItem = a.closest('li');
+          const img = listItem.querySelector('img');
+          listItem.innerHTML = '';
 
-          a.innerHTML = '';
-          a.append(span);
-          if (img) {
-            const imgDiv = createElement('div', { class: 'img-wrapper' }, img.outerHTML);
-            imgDiv.append(img);
-            img.remove();
-            a.append(imgDiv);
-            a.append(span);
-          }
           const dateMatch = a.textContent.match(/\([^)]+\)/);
+          let dateText;
 
           if (dateMatch) {
-            const dateText = dateMatch[0];
-            const dateSpan = createElement('span', { class: 'date' }, dateText);
-            a.innerHTML = a.innerHTML.replace(dateText, '');
-            a.append(dateSpan);
-
-            a.querySelector('.label').remove();
-            a.querySelector('.date').remove();
-
-            const div = createElement('div', { class: 'label-date-wrapper' }, [span, dateSpan]);
-
-            a.append(div);
+            [dateText] = dateMatch;
+            a.textContent = a.textContent.replace(dateText, '');
           }
 
-          a.setAttribute('tabindex', '0');
-          a.addEventListener('keydown', (e) => {
-            e.stopPropagation();
-          });
+          const anchor = createElement(
+            'a',
+            {
+              href: a.href,
+              ...(dateText ? {} : { class: 'no-date' }),
+            },
+            [
+              img,
+              createElement('div', { class: 'label-date-wrapper' }, [
+                createElement('span', { class: 'label' }, a.textContent),
+                ...(dateText ? [createElement('span', { class: 'date' }, [dateText])] : []),
+              ]),
+            ],
+          );
+
+          listItem.append(anchor);
         });
 
         item.addEventListener('click', handleNestedToggle);
@@ -386,30 +382,17 @@ export default async function decorate(block) {
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      const buttonContainers = navSection.querySelectorAll('.button-container');
-
-      buttonContainers.forEach((buttonContainer) => {
-        const button = buttonContainer.querySelector('a');
-        if (button) {
-          button.classList.remove('button');
-          buttonContainer.parentNode.replaceChild(button, buttonContainer);
-        }
-      });
-
-      navSection.querySelectorAll('p').forEach((p) => {
-        if (!p.querySelector('img')) {
+      const paragraphTags = navSection.querySelectorAll(':scope p');
+      paragraphTags.forEach((p) => {
+        const directAnchor = p.querySelector(':scope > a');
+        if (directAnchor) {
+          p.replaceWith(directAnchor);
+        } else if (p.querySelector(':scope > picture')) {
+          const img = p.querySelector(':scope img');
+          p.replaceWith(img);
+        } else {
           const span = createElement('span', {}, p.textContent);
           p.replaceWith(span);
-          const icon = p.querySelector('i');
-
-          if (icon) {
-            span.prepend(icon);
-          }
-        } else {
-          const img = p.querySelector('img');
-          const a = p.parentElement.querySelector('a');
-          a.prepend(img);
-          p.remove();
         }
       });
 
