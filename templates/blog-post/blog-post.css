@@ -17,6 +17,11 @@
         border-bottom: 1px solid var(--light-gray);
         padding-bottom: var(--spacing-s);
         font-size: var(--heading-font-size-xl);
+        margin-top: var(--spacing-m);
+
+        @media (width >= 1024px) {
+          margin-top: var(--spacing-xxl);
+        }
       }
 
       h2 {

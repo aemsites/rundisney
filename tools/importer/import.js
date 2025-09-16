@@ -12,8 +12,83 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
-const handleSectionMetadata = (main) => {
-  const sectionMetadata = main.querySelectorAll('.featuredEventsContainer');
+const handleCards = (main) => {
+  // standard cards with icon and content
+  const cardsSections = main.querySelectorAll('ul.tileList');
+
+  [...cardsSections].forEach((cardSection) => {
+    const cards = cardSection.querySelectorAll('li');
+    
+    if (cards.length > 0) {
+      const cells = [];
+      
+      [...cards].forEach((card) => {
+        const panelBody = card.querySelector('.panel-body');
+
+        if (panelBody) {
+          const icon = card.querySelector('.headerIcon');
+          const img = card.querySelector('img');
+          const link = card.querySelector('a');
+          const leftCol = icon ? icon.outerHTML : (img ? img.outerHTML : '');
+
+          if (link) {
+            panelBody.innerHTML += link.outerHTML;
+          }
+          
+          panelBody.querySelectorAll('.headerIcon, img').forEach(el => el.remove());
+          cells.push([leftCol, panelBody.innerHTML]);
+        }
+      });
+      
+      const blockTable = WebImporter.Blocks.createBlock(document, {
+        name: 'Cards',
+        cells,
+      });
+
+      cardSection.replaceWith(blockTable);
+    }
+  });
+
+  // storyCards
+  const storyCardsSections = main.querySelectorAll('ul.storyCard');
+
+  [...storyCardsSections].forEach((storyCardsSection) => {
+    const cards = storyCardsSection.querySelectorAll('li');
+    const cells = [];
+
+    [...cards].forEach((card) => {
+      let contentCol = '';
+      let imageCol = '';
+
+      const media = card.querySelector('.media');
+      const link = card.querySelector('a');
+      console.log(link);
+
+      if (media) {
+        const img = media.querySelector('img');
+        const mediaBody = media.querySelector('.media-body');
+        imageCol = img ? img.outerHTML : '';
+        contentCol = mediaBody ? mediaBody.innerHTML : '';
+      }
+
+      if (link) {
+        contentCol += link.outerHTML;
+      }
+
+      if (imageCol || contentCol) {
+        cells.push([imageCol, contentCol]);
+      }
+    });
+
+    if (cells.length > 0) {
+      const blockTable = WebImporter.Blocks.createBlock(document, {
+        name: 'Cards (Overlay)',
+        cells,
+      });
+
+      storyCardsSection.replaceWith(blockTable);
+    }
+  });
 };
 
 const handleBlogPosts = (main, metadata) => {
@@ -45,7 +120,7 @@ const handleBlogPosts = (main, metadata) => {
   if (heroImg) {
     heroImg.after(document.createElement('hr'));
   }
-  
+
   const author = main.querySelector('.authorName').textContent.trim();
   const authorName = author.replace('by ', '');
   const date = main.querySelector('.authorDescription .date').textContent;
@@ -78,22 +153,51 @@ const handleBlogPosts = (main, metadata) => {
 
     metadataTable.appendChild(rowEl);
   });
-
-  WebImporter.DOMUtils.remove(main, [
-    '.blogDetailStayConnected',
-    '.blogDetailByline',
-    '#blogDetail .asTileFeaturedList',
-    '.categories',
-  ]);
 };
 
 const handleLinks = (main) => {
   const links = main.querySelectorAll('a');
 
   links.forEach((link) => {
-    link.href = link.href
+    const originalHref = link.href;
+    const newHref = originalHref
       .replace(/^https?:\/\/(www\.)?rundisney\.com(.*)/, 'https://main--rundisney--da-pilot.aem.page$2')
       .replace(/\/$/, '');
+    link.href = newHref;
+
+    if (link.textContent.trim() === originalHref) {
+      link.textContent = newHref;
+    }
+  });
+};
+
+const handleIcons = (main) => {
+  const icons = main.querySelectorAll('[class*="icon__"]');
+  icons.forEach((icon) => {
+    const iconClass = [...icon.classList].find((cls) => cls.startsWith('icon__'));
+    const iconName = iconClass ? iconClass.replace('icon__', '') : '';
+    icon.replaceWith(`:${iconName}:`);
+  });
+};
+
+export const handleSections = (main) => {
+  const sections = main.querySelectorAll('.contentGroupItem:not(:has(.cssOverride))');
+
+  sections.forEach((section) => {
+    if (section !== sections[sections.length - 1]) {
+
+      const firstDiv = section.querySelector('div');
+      // add more below later - there are many shades of slighly different gray colors being used as background colors and borders.
+      if (firstDiv && firstDiv.classList.contains('featuredEventsContainer')) {
+        const metadataTable = WebImporter.Blocks.createBlock(document, {
+          name: 'Section Metadata',
+          cells: [['Style', 'Gray Background']],
+        });
+        section.after(metadataTable); metadataTable.after(document.createElement('hr'));
+      } else {
+        section.after(document.createElement('hr'));
+      }
+    }
   });
 };
 
@@ -107,6 +211,7 @@ export default {
    * @param {object} params Object containing some parameters given by the import process.
    * @returns {HTMLElement} The root element to be transformed
    */
+
   transform: ({
     // eslint-disable-next-line no-unused-vars
     document, url, html, params,
@@ -120,14 +225,33 @@ export default {
       'noscript',
     ]);
 
-    const metadata = WebImporter.rules.createMetadata(main, document);
+    const hasPreFooterSubscriptionBanner = document.querySelector('.contactInfo');
+
+    const metadata = WebImporter.Blocks.getMetadata(document);
+    metadata.Newsletter = hasPreFooterSubscriptionBanner ? 'true' : 'false';
+    
+    const metadataBlock = WebImporter.Blocks.getMetadataBlock(document, metadata);
+    main.append(metadataBlock);
+    
     WebImporter.rules.transformBackgroundImages(main, document);
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
     WebImporter.rules.convertIcons(main, document);
 
     handleBlogPosts(main, metadata);
+    handleCards(main);
+
+    WebImporter.DOMUtils.remove(main, [
+      '.blogDetailStayConnected',
+      '.blogDetailByline',
+      '#blogDetail .asTileFeaturedList',
+      '.categories',
+      '.carouselContainer', //temporary
+      [...(hasPreFooterSubscriptionBanner ? ['.contactInfo'] : [])],
+    ]);
+
+    handleIcons(main);
+    handleSections(main);
     handleLinks(main);
-    handleSectionMetadata(main);
 
     const ret = [];
 

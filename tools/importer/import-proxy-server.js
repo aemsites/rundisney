@@ -2,6 +2,8 @@ import puppeteer from 'puppeteer'; // eslint-disable-line import/no-extraneous-d
 import { createServer } from 'http';
 import open from 'open'; // eslint-disable-line import/no-extraneous-dependencies
 import { logger, colors } from './utils.js';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 const PORT = 4001;
 const CACHE_TTL = 5 * 60 * 1000;
@@ -83,6 +85,32 @@ async function prerenderPage(targetUrl) {
   try {
     const page = await browser.newPage();
 
+    const fontPath = join(process.cwd(), '..', '..', 'fonts', 'pepmdx', 'pepmdx.woff');
+    const fontData = readFileSync(fontPath);
+    const fontBase64 = fontData.toString('base64');
+
+    await page.evaluateOnNewDocument((fontBase64) => {
+      const fontInjection = `
+      <style>
+        @font-face {
+          font-family: 'Pepmdx';
+          src: url('data:font/woff;base64,${fontBase64}') format('woff');
+          font-weight: normal;
+          font-style: normal;
+        }
+      </style>`;
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          const head = document.head || document.getElementsByTagName('head')[0];
+          head.insertAdjacentHTML('beforeend', fontInjection);
+        });
+      } else {
+        const head = document.head || document.getElementsByTagName('head')[0];
+        head.insertAdjacentHTML('beforeend', fontInjection);
+      }
+    }, fontBase64);
+
     await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36');
     await page.setViewport({ width: 1920, height: 1080 });
 
@@ -130,6 +158,30 @@ async function prerenderPage(targetUrl) {
     let html = await page.content();
     const title = await page.title();
     html = html.replace(/<base\s+href=["'][^"']*["']\s*\/?>/gi, '<!-- base href removed by proxy -->');
+    html = html.replace(
+      /<i class="([^"]*icon__[^"]*)"([^>]*?)>([^<]*?)<\/i>/g,
+      (match, classes, otherAttrs, content) => {
+        const cleanAttrs = otherAttrs
+          .replace(/\s*ng-if="[^"]*"/g, '')
+          .replace(/\s*ng-transclude="[^"]*"/g, '')
+          .replace(/\s*ng-style="[^"]*"/g, '')
+          .replace(/\s*aria-hidden="[^"]*"/g, '');
+        
+        return `<span class="${classes}"${cleanAttrs}>${content}</span>`;
+      }
+    );
+
+     html = html.replace(
+       /<a([^>]*?)>([^<]*?)<\/a>/g,
+       (match, attrs, content) => {
+         let linkText = content.trim();
+         if (!linkText) {
+           const hrefMatch = attrs.match(/href=["']([^"']*)["']/);
+           linkText = hrefMatch ? hrefMatch[1] : 'Learn More';
+         }
+         return `<a${attrs}>${linkText}</a>`;
+       }
+     );
 
     const isRichContent = html.includes('ng-app="runSpa"') && html.length > 20000;
 
