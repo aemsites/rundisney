@@ -1,11 +1,11 @@
 main > .section {
-  margin: 40px 0;
+  margin: var(--spacing-xxl) 0;
 }
 
 main > .section > div {
   max-width: var(--site-max-width);
   margin: auto;
-  padding: 0 24px;
+  padding: 0 var(--spacing-m);
 }
 
 main > .section:first-of-type {
@@ -14,10 +14,19 @@ main > .section:first-of-type {
 
 @media (width >=1024px) {
   main > .section > div {
-    padding: 0 32px;
+    padding: 0 var(--spacing-l);
   }
 }
 
+/* section metadata */
 main > .section > .default-content-wrapper {
+  margin-bottom: var(--spacing-m);
   text-align: center; /* most of the standard content seems to be centered, can instead this as a section metadata style if needed later */
+}
+
+main > .section.gray-background {
+  background-color: var(--light-gray-2);
+  padding: var(--spacing-m) 0;
+  border-top: 1px solid var(--light-gray);
+  border-bottom: 1px solid var(--light-gray);
 }
