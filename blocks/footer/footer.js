@@ -97,7 +97,7 @@ export default async function decorate(block) {
     const footer = createElement('div', {}, html);
 
     const footerLinks = footer.querySelector('.footer-links');
-    const shouldShowNewsletter = getMetadata('newsletter').toLowerCase() === 'true';
+    const shouldShowNewsletter = getMetadata('footer-contact').toLowerCase() === 'true';
 
     if (shouldShowNewsletter) {
       block.classList.add('show-newsletter');

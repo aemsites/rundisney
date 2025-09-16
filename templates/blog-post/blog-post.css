@@ -25,7 +25,7 @@
       }
 
       h2 {
-        margin-bottom: var(--spacing-m);
+        margin: var(--spacing-m) 0;
         font-weight: 400;
       }
     }
