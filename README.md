@@ -24,4 +24,4 @@ npm run lint
 - Open the `rundisney` directory in your favorite IDE and start coding :)
 
 ## Importing Content
-See https://github.com/aemsites/rundisney/blob/importer/tools/importer/README.md
+See https://github.com/aemsites/rundisney/blob/main/tools/importer/README.md
