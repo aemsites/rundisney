@@ -9,8 +9,6 @@ main > .section > div {
 }
 
 main > .section:first-of-type {
-  text-align: center;
-
   &.hero-container {
     margin-top: 0;
   }
