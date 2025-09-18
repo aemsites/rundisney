@@ -39,5 +39,80 @@
     >div {
       background-color: var(--primary-light);
     }
+    
+    >div .columns-content {
+      padding: var(--spacing-s);
+    }
   }
+
+  &.icon-separator {
+    >div {
+      position: relative;
+      
+      @media (width < 1024px) {
+        margin-bottom: calc(var(--spacing-l) + var(--spacing-s));
+      }
+      
+      @media (width >=1024px) {
+        gap: 0;
+      }
+      
+      @media (width >= 1024px) {
+        >div:first-child .columns-content {
+          padding-right: var(--spacing-xxxxl);
+        }
+        
+        >div:last-child .columns-content {
+          padding-left: var(--spacing-xxxxl);
+        }
+        
+        >div:not(:first-child):not(:last-child) .columns-content {
+          padding: 0 var(--spacing-xxxxl);
+        }
+      }
+      
+      
+      .columns-icon-separator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: var(--z-index-above);
+        background: var(--white);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        box-shadow: 0 2px var(--spacing-xxs) rgb(0 0 0 / 15%);
+        
+        .icon,
+        [class*="icon__"],
+        [class*="icon-"] {
+          font-size: 2.5rem;
+          color: inherit;
+        }
+      }
+      
+      @media (width >=1024px) {
+        .columns-icon-separator {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 80px;
+          height: 80px;
+          
+          .icon,
+          [class*="icon__"],
+          [class*="icon-"] {
+            font-size: 2.5rem;
+            color: inherit;
+          }
+        }
+      }
+    }
+  }
+  
 }

@@ -49,5 +49,16 @@ main {
       font-size: var(--body-font-size-l);
       text-align: center;
     }
+
+    &.left {
+      text-align: left;
+
+      :is(h1, h2, h3, h4, h5, h6),
+      .primary-link-container,
+      .primary-intro p,
+      p:has(.icon), .button-container {
+        text-align: left;
+      }
+    }
   }
 }
