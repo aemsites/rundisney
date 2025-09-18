@@ -410,7 +410,11 @@ export default async function decorate(block) {
     const selectedCategories = getSelectedValues(categorySelect);
     const selectedMonths = getSelectedValues(monthSelect);
     state.filteredItems = applyFilters(state.allItems, selectedCategories, selectedMonths);
-    totalResults.textContent = `${state.filteredItems.length} results`;
+    if (selectedCategories.length || selectedMonths.length) {
+      totalResults.textContent = `${state.filteredItems.length} results`;
+    } else {
+      totalResults.textContent = `${state.totalCount} results`;
+    }
     clearResults();
     updateNoResultsVisibility();
     renderNextPage();
