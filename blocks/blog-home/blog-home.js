@@ -52,34 +52,40 @@ function getMonthKey(epochSeconds) {
 
 /**
  * Creates a custom multi-select dropdown wrapper with a trigger and menu.
+ * The trigger contains a title (e.g., "Category") and a summary (e.g., "All Categories").
+ * @param {string} titleText
  * @param {string} placeholder
- * @returns {{root: HTMLElement, trigger: HTMLElement, menu: HTMLElement, label: HTMLElement}}
+ * @returns {{
+ * root:HTMLElement,
+ * trigger:HTMLElement,
+ * menu:HTMLElement,
+ * title:HTMLElement,
+ * summary:HTMLElement
+ * }}
  */
-function createMultiSelect(placeholder) {
+function createMultiSelect(titleText, placeholder) {
   const root = createElement('div', { class: 'multi-select' });
-  const trigger = createElement('button', { type: 'button', class: 'multi-select-trigger' });
-  const label = createElement('span', { class: 'multi-select-label' }, placeholder);
+  const trigger = createElement('button', { type: 'button', class: 'multi-select-trigger', 'aria-label': titleText });
+  const text = createElement('div', { class: 'multi-select-text' });
+  const title = createElement('span', { class: 'multi-select-title' }, titleText);
+  const summary = createElement('span', { class: 'multi-select-summary' }, placeholder);
   const caret = createElement('i', { class: 'multi-select-caret' });
-  trigger.append(label, caret);
+  text.append(title, summary);
+  trigger.append(text, caret);
   const menu = createElement('div', { class: 'multi-select-menu' });
   root.append(trigger, menu);
   // toggle open/close
-  trigger.addEventListener('click', () => {
-    root.classList.toggle('open');
-  });
+  trigger.addEventListener('click', () => root.classList.toggle('open'));
   // close on outside click
-  document.addEventListener('click', (e) => {
-    if (!root.contains(e.target)) root.classList.remove('open');
-  });
+  document.addEventListener('click', (e) => { if (!root.contains(e.target)) root.classList.remove('open'); });
   // close on escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') root.classList.remove('open');
-  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') root.classList.remove('open'); });
   return {
     root,
     trigger,
     menu,
-    label,
+    title,
+    summary,
   };
 }
 
@@ -357,17 +363,17 @@ export default async function decorate(block) {
   block.classList.add('blog-home');
   const filters = createElement('div', { class: 'blog-home-filters' });
 
-  const categoryWrap = createElement('label', { class: 'blog-home-filter' }, 'Category');
+  const categoryWrap = createElement('label', { class: 'blog-home-filter' }, '');
   const categorySelect = createElement('select', { class: 'blog-home-select', multiple: true });
   categoryWrap.append(categorySelect);
 
-  const monthWrap = createElement('label', { class: 'blog-home-filter' }, 'Month');
+  const monthWrap = createElement('label', { class: 'blog-home-filter' }, '');
   const monthSelect = createElement('select', { class: 'blog-home-select', multiple: true });
   monthWrap.append(monthSelect);
 
-  // Custom dropdowns with checkboxes
-  const catMulti = createMultiSelect('All Categories');
-  const monthMulti = createMultiSelect('All Months');
+  // Custom dropdowns with checkboxes (labels inside trigger)
+  const catMulti = createMultiSelect('Category', 'All Categories');
+  const monthMulti = createMultiSelect('Month', 'All Months');
   categoryWrap.append(catMulti.root);
   monthWrap.append(monthMulti.root);
 
@@ -393,16 +399,12 @@ export default async function decorate(block) {
     const end = Math.min(start + PAGE_SIZE, state.filteredItems.length);
     if (start >= end) return;
     const fragment = document.createDocumentFragment();
-    for (let i = start; i < end; i += 1) {
-      fragment.append(buildPostCard(state.filteredItems[i]));
-    }
+    for (let i = start; i < end; i += 1) fragment.append(buildPostCard(state.filteredItems[i]));
     results.append(fragment);
     state.renderedCount = end;
   };
 
-  const updateNoResultsVisibility = () => {
-    noResults.style.display = state.filteredItems.length === 0 ? '' : 'none';
-  };
+  const updateNoResultsVisibility = () => { noResults.style.display = state.filteredItems.length === 0 ? '' : 'none'; };
 
   const reapplyFilters = () => {
     const selectedCategories = getSelectedValues(categorySelect);
@@ -420,10 +422,7 @@ export default async function decorate(block) {
       const entry = entries[0];
       if (!entry || !entry.isIntersecting) return;
       renderNextPage();
-      // if all rendered, stop observing
-      if (state.renderedCount >= state.filteredItems.length) {
-        state.observer.disconnect();
-      }
+      if (state.renderedCount >= state.filteredItems.length) state.observer.disconnect();
     }, { rootMargin: '250px 0px' });
     state.observer.observe(sentinel);
   };
@@ -445,47 +444,41 @@ export default async function decorate(block) {
   populateMonthSelect(monthSelect, buildYearMonthMap(state.allItems));
 
   // Build category checkbox menu
-  const categoryOptions = Array.from(categorySelect.options).map((o) => ({
-    value: o.value,
-    label: o.textContent,
-  }));
+  const categoryOptions = Array.from(categorySelect.options).map(
+    (o) => ({ value: o.value, label: o.textContent }),
+  );
   categoryOptions.forEach((opt) => {
     if (opt.value === 'all') return;
     const item = createCheckboxItem(opt.value, opt.label, (checked, value) => {
       const optionEl = Array.from(categorySelect.options).find((o) => o.value === value);
       if (optionEl) optionEl.selected = checked;
-      // Update trigger label
       const selected = getSelectedValues(categorySelect);
-      catMulti.label.textContent = selected.length ? `${selected.length} selected` : 'All Categories';
+      catMulti.summary.textContent = selected.length ? `${selected.length} selected` : 'All Categories';
       reapplyFilters();
     });
     catMulti.menu.append(item);
   });
-  if (!catMulti.menu.children.length) {
-    const empty = createElement('div', { class: 'multi-select-empty' }, 'No categories available');
-    catMulti.menu.append(empty);
-  }
+  if (!catMulti.menu.children.length) catMulti.menu.append(createElement('div', { class: 'multi-select-empty' }, 'No categories available'));
 
   // Build month checkbox menu (grouped by year)
   buildMonthCheckboxes(monthMulti.menu, buildYearMonthMap(state.allItems), (checked, value) => {
     const optionEl = Array.from(monthSelect.options).find((o) => o.value === value);
     if (optionEl) optionEl.selected = checked;
-    // Update label text
     const selected = getSelectedValues(monthSelect);
-    monthMulti.label.textContent = selected.length ? `${selected.length} selected` : 'All Months';
+    monthMulti.summary.textContent = selected.length ? `${selected.length} selected` : 'All Months';
     reapplyFilters();
   });
 
   // native change hooks (if any manual changes occur)
   categorySelect.addEventListener('change', () => {
     const selected = getSelectedValues(categorySelect);
-    catMulti.label.textContent = selected.length ? `${selected.length} selected` : 'All Categories';
+    catMulti.summary.textContent = selected.length ? `${selected.length} selected` : 'All Categories';
     reapplyFilters();
     setupInfiniteScroll();
   });
   monthSelect.addEventListener('change', () => {
     const selected = getSelectedValues(monthSelect);
-    monthMulti.label.textContent = selected.length ? `${selected.length} selected` : 'All Months';
+    monthMulti.summary.textContent = selected.length ? `${selected.length} selected` : 'All Months';
     reapplyFilters();
     setupInfiniteScroll();
   });
