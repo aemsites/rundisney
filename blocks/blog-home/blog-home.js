@@ -201,7 +201,7 @@ function buildYearMonthMap(items) {
  */
 function populateMonthSelect(selectEl, yearMonthMap) {
   selectEl.innerHTML = '';
-  const all = createElement('option', { value: 'all', textContent: 'All Months' });
+  const all = createElement('option', { value: 'all' }, 'All Months');
   selectEl.append(all);
 
   const now = new Date();
@@ -213,14 +213,14 @@ function populateMonthSelect(selectEl, yearMonthMap) {
 
   for (let year = currentYear; year >= minYear; year -= 1) {
     const optgroup = createElement('optgroup', { label: String(year) });
-    const allYear = createElement('option', { value: `year:${year}`, textContent: String(year) });
+    const allYear = createElement('option', { value: `year:${year}` }, String(year));
     optgroup.append(allYear);
 
     const lastMonth = year === currentYear ? currentMonth : 12;
     for (let monthNum = 1; monthNum <= lastMonth; monthNum += 1) {
       const mm = String(monthNum).padStart(2, '0');
       const monthDate = new Date(Date.UTC(year, monthNum, 1));
-      const option = createElement('option', { value: `month:${year}-${mm}`, textContent: monthDate.toLocaleDateString('en-US', { month: 'long' }) });
+      const option = createElement('option', { value: `month:${year}-${mm}` }, monthDate.toLocaleDateString('en-US', { month: 'long' }));
       optgroup.append(option);
     }
 
@@ -274,10 +274,10 @@ function applyFilters(items, selectedCategories, selectedMonths) {
  */
 function populateSelect(selectEl, options, allLabel) {
   selectEl.innerHTML = '';
-  const all = createElement('option', { value: 'all', textContent: allLabel });
+  const all = createElement('option', { value: 'all' }, allLabel);
   selectEl.append(all);
   options.forEach((opt) => {
-    const o = createElement('option', { value: opt.value, textContent: opt.label });
+    const o = createElement('option', { value: opt.value }, opt.label);
     selectEl.append(o);
   });
 }
@@ -292,7 +292,7 @@ function populateSelect(selectEl, options, allLabel) {
 function createCheckboxItem(value, label, onChange) {
   const item = createElement('label', { class: 'multi-select-item' });
   const input = createElement('input', { type: 'checkbox', value });
-  const span = createElement('span', { textContent: label });
+  const span = createElement('span', {}, label);
   item.append(input, span);
   input.addEventListener('change', () => onChange(input.checked, value));
   return item;
@@ -315,7 +315,7 @@ function buildMonthCheckboxes(menu, yearMonthMap, onChange) {
 
     const header = createElement('div', { class: 'multi-select-group-header' });
     const yearCheckbox = createElement('input', { type: 'checkbox', value: `year:${year}` });
-    const yearLabel = createElement('span', { textContent: String(year) });
+    const yearLabel = createElement('span', {}, String(year));
     header.append(yearCheckbox, yearLabel);
 
     const items = createElement('div', { class: 'multi-select-group-items' });
@@ -459,9 +459,7 @@ export default async function decorate(block) {
     catMulti.menu.append(item);
   });
   if (!catMulti.menu.children.length) {
-    const empty = document.createElement('div');
-    empty.className = 'multi-select-empty';
-    empty.textContent = 'No categories available';
+    const empty = createElement('div', { class: 'multi-select-empty' }, 'No categories available');
     catMulti.menu.append(empty);
   }
 
