@@ -1,6 +1,15 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { createElement } from '../../utils/dom.js';
 
+const PAGE_SIZE = 10;
+const state = {
+  allItems: [],
+  filteredItems: [],
+  renderedCount: 0,
+  observer: null,
+  totalCount: 0,
+};
+
 /**
  * Formats a tag string like "categories/walt-disney-world-resort" to a readable label.
  * @param {string} tag
@@ -138,7 +147,7 @@ async function fetchBlogIndex() {
   if (!response.ok) throw new Error('Failed to load blog index');
   const json = await response.json();
   const { data = [] } = json;
-
+  state.totalCount = json.total;
   // normalize entries
   const normalized = data
     .filter((row) => row && row.path && row.template === 'blog-post')
@@ -344,14 +353,6 @@ function buildMonthCheckboxes(menu, yearMonthMap, onChange) {
 }
 
 export default async function decorate(block) {
-  const PAGE_SIZE = 10;
-  const state = {
-    allItems: [],
-    filteredItems: [],
-    renderedCount: 0,
-    observer: null,
-  };
-
   // structure
   block.classList.add('blog-home');
   const filters = createElement('div', { class: 'blog-home-filters' });
@@ -429,6 +430,7 @@ export default async function decorate(block) {
   // load data
   try {
     state.allItems = await fetchBlogIndex();
+    totalResults.textContent = `${state.totalCount} results`;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
