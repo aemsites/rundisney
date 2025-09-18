@@ -408,6 +408,7 @@ export default async function decorate(block) {
     const selectedCategories = getSelectedValues(categorySelect);
     const selectedMonths = getSelectedValues(monthSelect);
     state.filteredItems = applyFilters(state.allItems, selectedCategories, selectedMonths);
+    totalResults.textContent = `${state.filteredItems.length} results`;
     clearResults();
     updateNoResultsVisibility();
     renderNextPage();
