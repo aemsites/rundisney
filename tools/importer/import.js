@@ -66,7 +66,7 @@ const handleStoryCards = (main) => {
       const isCardsBlock = wrapper && cardBlockClasses.some(cls => wrapper.classList.contains(cls));
       const isColumnsBlock = wrapper && (wrapper.classList.contains('stamp-cards') || wrapper.querySelector('.media.full-width.single') || storyCardsSection.querySelector('.event-card.single'));
       const isIconListBlock = wrapper && (wrapper.classList.contains('storyCardBadge'));
-      const isCalloutBlock = storyCardsSection.querySelector('.storyCardIcon') && !wrapper.classList.contains('storyCardBadge')
+      const isCalloutBlock = (storyCardsSection.querySelector('.storyCardIcon') && !wrapper.classList.contains('storyCardBadge')) || storyCardsSection.querySelector('as-story-card-training-item');
 
       const checklist = storyCardsSection.querySelectorAll('.check-list');
 
@@ -121,7 +121,7 @@ const handleStoryCards = (main) => {
           storyCardsSection.replaceWith(blockTable);
         }
       } else if (isColumnsBlock) {
-        const hasIcon = storyCardsSection.querySelector('.pepicon');
+        const hasIcon = storyCardsSection.querySelector('.titleRow .pepicon');
         const blockName = hasIcon ? 'Columns (Icon Separator)' : 'Columns';
 
         const cards = storyCardsSection.querySelectorAll(':scope > li');
@@ -134,9 +134,18 @@ const handleStoryCards = (main) => {
           const media = card.querySelector('.media');
           if (media) {
             const mediaLeft = media.querySelector('.media-left');
+            const mediaRight = media.querySelector('.media-right');
             const mediaBody = media.querySelector('.media-body');
-            leftCol = mediaLeft ? mediaLeft.outerHTML : '';
-            rightCol = mediaBody ? mediaBody.outerHTML : '';
+            
+            if (mediaLeft) {
+              leftCol = mediaLeft.outerHTML;
+              rightCol = mediaBody ? mediaBody.outerHTML : '';
+            } else if (mediaRight) {
+              leftCol = mediaBody ? mediaBody.outerHTML : '';
+              rightCol = mediaRight.outerHTML;
+            } else {
+              rightCol = mediaBody ? mediaBody.outerHTML : '';
+            }
           } else {
             rightCol = card.innerHTML;
           }
@@ -153,6 +162,7 @@ const handleStoryCards = (main) => {
           }));
         }
       } else if (isCalloutBlock) {
+        let blockname = 'Callout';
         const rows = storyCardsSection.querySelectorAll('li');
         const cells = [];
         [...rows].forEach((row) => {
@@ -163,8 +173,40 @@ const handleStoryCards = (main) => {
           }
           cells.push([row.innerHTML]);
         });
+
+        if (storyCardsSection.querySelector('as-story-card-training-item')) {
+          blockname = `${blockname} (Download)`;
+
+          cells.length = 0;
+          [...rows].forEach((row) => {
+            const mediaLeft = row.querySelector('.media-left');
+            if (mediaLeft) {
+              const typeElement = mediaLeft.querySelector('.type');
+              if (typeElement) {
+                const h3 = document.createElement('h3');
+                h3.innerHTML = typeElement.innerHTML;
+                typeElement.replaceWith(h3);
+              }
+            }
+            const mediaBody = row.querySelector('.media-body');
+            const mediaRight = row.querySelector('.media-right');
+            console.log(row);
+            const downloadLink = mediaRight ? mediaRight.querySelector('a') : null;
+            
+            const leftCol = mediaLeft ? mediaLeft.outerHTML : '';
+            let rightCol = mediaBody ? mediaBody.outerHTML : '';
+            
+            if (downloadLink) {
+              
+              rightCol += downloadLink.outerHTML;
+            }
+            
+            cells.push([leftCol, rightCol]);
+          });
+        }
+
         storyCardsSection.replaceWith(WebImporter.Blocks.createBlock(document, {
-          name: 'Callout',
+          name: blockname,
           cells,
         }));
       } else if (isIconListBlock) {
