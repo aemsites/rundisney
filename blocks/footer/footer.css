@@ -78,6 +78,14 @@ footer {
       a {
         color: var(--text-color);
       }
+
+      i {
+        font-size: var(--icon-size-l);
+
+        &:hover {
+          color: var(--link-hover-color);
+        }
+      }
     }
   }
 

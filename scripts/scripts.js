@@ -31,10 +31,13 @@ function buildHeroBlock(main) {
     return;
   }
 
-  const elems = [...section.children];
-  const filtered = elems.filter((el) => !el.classList.contains('section-metadata') && !el.classList.contains('alert'));
-  const block = buildBlock('hero', { elems: filtered });
-  section.append(block);
+  // eslint-disable-next-line no-bitwise
+  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+    const elems = [...section.children];
+    const filtered = elems.filter((el) => !el.classList.contains('section-metadata') && !el.classList.contains('alert'));
+    const block = buildBlock('hero', { elems: filtered });
+    section.append(block);
+  }
 }
 
 /**

@@ -9,7 +9,11 @@ main > .section > div {
 }
 
 main > .section:first-of-type {
-  margin-top: 0;
+  text-align: center;
+
+  &.hero-container {
+    margin-top: 0;
+  }
 }
 
 @media (width >=1024px) {
@@ -21,7 +25,17 @@ main > .section:first-of-type {
 /* section metadata */
 main > .section > .default-content-wrapper {
   margin-bottom: var(--spacing-m);
-  text-align: center; /* most of the standard content seems to be centered, can instead this as a section metadata style if needed later */
+
+  & picture, & img {
+    margin: auto;
+    display: block;
+  }
+
+  :is(h1, h2, h3, h4, h5, h6),
+  .primary-link-container {
+    text-align: center;
+  }
+
 }
 
 main > .section.gray-background {

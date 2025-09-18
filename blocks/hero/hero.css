@@ -3,23 +3,21 @@ body:not(.blog-post-template) {
     .hero-wrapper {
       max-width: unset;
       padding: 0;
-  
+
       .hero {
         position: relative;
         text-align: center;
-  
-        > div > div >  p {
+
+        >div>div>p {
           margin: 0;
         }
-  
+
         h1 {
           max-width: var(--site-max-width);
-          margin-left: auto;
-          margin-right: auto;
-          color: var(--background-color);
-          display: none;
+          margin: var(--spacing-l) auto 0 auto;
+          color: var(--text-color);
         }
-  
+
         img {
           object-fit: cover;
           width: 100%;
@@ -27,20 +25,22 @@ body:not(.blog-post-template) {
         }
       }
     }
-  
-    &.content-hero {
+
+    &.overlay {
       .hero {
+        min-height: 300px;
         padding: var(--spacing-xxxxl) var(--spacing-m);
-  
-        @media (width >=1024px) {
-          padding: calc(var(--spacing-xxxxl) * 2) var(--spacing-m);
-        }
-  
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
         h1 {
-          display: block;
-          margin-top: 0;
+          max-width: var(--site-max-width);
+          margin-left: auto;
+          margin-right: auto;
+          color: var(--white);
         }
-  
+
         picture {
           position: absolute;
           z-index: -1;

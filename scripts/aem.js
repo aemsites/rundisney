@@ -398,6 +398,10 @@ function decorateButtons(element) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;
       if (!a.querySelector('img')) {
+        if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
+          a.className = 'primary-link'; // default
+          up.classList.add('primary-link-container');
+        }
         if (
           up.childNodes.length === 1
           && up.tagName === 'STRONG'
