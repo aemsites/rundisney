@@ -261,12 +261,28 @@ const handleBlogPosts = (main, metadata) => {
     heroImg.after(document.createElement('hr'));
   }
 
+  const video = main.querySelectorAll('as-media-engine');
+
+  if (video.length > 0) {
+    video.forEach((vid) => {
+      const { src } = vid.querySelector('video');
+
+      const videoBlock = WebImporter.Blocks.createBlock(document, {
+        name: 'Video',
+        cells: [[`<a href="${src}">${src}</a>`]],
+      });
+      vid.replaceWith(videoBlock);
+      vid.after(document.createElement('hr'));
+    });
+  }
+
   const author = main.querySelector('.authorName').textContent.trim();
   const authorName = author.replace('by ', '');
   const date = main.querySelector('.authorDescription .date').textContent;
   const categories = [...main.querySelectorAll('.categories .media-body a')]
     .map((a) => a.textContent.trim().replace(/\s*,\s*$/, ''))
     .filter((cat) => cat.length > 0)
+    .map((cat) => cat.toLowerCase().replace(/\s+/g, '-'));
 
   metadata.author = authorName;
   metadata.date = date;
