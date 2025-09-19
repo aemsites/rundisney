@@ -1,5 +1,6 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { createElement } from '../../utils/dom.js';
+import { parseUrlParams, applyFilters } from '../blog-filter/blog-filter.js';
 
 const PAGE_SIZE = 10;
 const state = {
@@ -127,11 +128,22 @@ export default async function decorate(block) {
     setupInfiniteScroll();
   };
 
-  // load data using cached fetchBlogIndex
   try {
     state.allItems = await window.fetchBlogIndex();
     state.totalCount = window.blogIndexTotalCount || state.allItems.length;
-    updateResults(state.allItems, state.totalCount);
+
+    // Check if there are URL parameters for filtering
+    const urlParams = parseUrlParams();
+    const hasFilterParams = urlParams.categories.length > 0 || urlParams.months.length > 0;
+
+    if (hasFilterParams) {
+      // Apply filters directly based on URL parameters
+      const filteredItems = applyFilters(state.allItems, urlParams.categories, urlParams.months);
+      updateResults(filteredItems, state.totalCount);
+    } else {
+      // No filter parameters, show all results
+      updateResults(state.allItems, state.totalCount);
+    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);

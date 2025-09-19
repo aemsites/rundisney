@@ -13,7 +13,7 @@ function isBlogPage() {
  * Parses URL parameters for categories and months.
  * @returns {{categories: string[], months: string[]}}
  */
-function parseUrlParams() {
+export function parseUrlParams() {
   const urlParams = new URLSearchParams(window.location.search);
   const categories = urlParams.getAll('category');
   const months = urlParams.getAll('month');
@@ -317,7 +317,7 @@ function buildMonthCheckboxes(menu, yearMonthMap, onChange) {
  * @param {string[]} selectedMonths
  * @returns {Array<object>}
  */
-function applyFilters(items, selectedCategories, selectedMonths) {
+export function applyFilters(items, selectedCategories, selectedMonths) {
   let result = items;
 
   if (selectedCategories && selectedCategories.length > 0) {
@@ -488,6 +488,9 @@ export default async function decorate(block) {
     const selectedMonths = getSelectedValues(monthSelect);
     catMulti.summary.textContent = selectedCategories.length ? `${selectedCategories.length} selected` : 'All Categories';
     monthMulti.summary.textContent = selectedMonths.length ? `${selectedMonths.length} selected` : 'All Months';
+
+    // Trigger filter change event to update blog-home with filtered results
+    triggerFilterChange(categorySelect, monthSelect, blogIndex);
   }
 
   // Build category checkbox menu
