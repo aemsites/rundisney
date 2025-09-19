@@ -396,8 +396,63 @@ export default async function decorate(block) {
   monthWrap.append(monthMulti.root);
 
   filters.append(categoryWrap, monthWrap);
+
+  // Mobile filter button
+  const mobileFilterButton = createElement('button', {
+    class: 'mobile-filter-button',
+    type: 'button',
+  }, 'Filter');
+
+  // Mobile filter overlay
+  const mobileFilterOverlay = createElement('div', { class: 'mobile-filter-overlay' });
+
+  const mobileFilterHeader = createElement('div', { class: 'mobile-filter-header' });
+  const mobileFilterTitle = createElement('h2', { class: 'mobile-filter-title' }, 'Filter');
+  const mobileFilterClose = createElement('button', {
+    class: 'mobile-filter-close',
+    type: 'button',
+    'aria-label': 'Close filter',
+  }, '×');
+  mobileFilterHeader.append(mobileFilterTitle, mobileFilterClose);
+
+  const mobileFilterContent = createElement('div', { class: 'mobile-filter-content' });
+
+  // Category section for mobile
+  const mobileCategorySection = createElement('div', { class: 'mobile-filter-section' });
+  const mobileCategoryHeader = createElement('div', { class: 'mobile-filter-section-header' });
+  const mobileCategoryTitle = createElement('div', { class: 'mobile-filter-section-title' }, 'Category');
+  const mobileCategoryCaret = createElement('div', { class: 'mobile-filter-section-caret' });
+  mobileCategoryHeader.append(mobileCategoryTitle, mobileCategoryCaret);
+  const mobileCategoryContent = createElement('div', { class: 'mobile-filter-section-content' });
+  mobileCategorySection.append(mobileCategoryHeader, mobileCategoryContent);
+
+  // Month section for mobile
+  const mobileMonthSection = createElement('div', { class: 'mobile-filter-section' });
+  const mobileMonthHeader = createElement('div', { class: 'mobile-filter-section-header' });
+  const mobileMonthTitle = createElement('div', { class: 'mobile-filter-section-title' }, 'Month');
+  const mobileMonthCaret = createElement('div', { class: 'mobile-filter-section-caret' });
+  mobileMonthHeader.append(mobileMonthTitle, mobileMonthCaret);
+  const mobileMonthContent = createElement('div', { class: 'mobile-filter-section-content' });
+  mobileMonthSection.append(mobileMonthHeader, mobileMonthContent);
+
+  mobileFilterContent.append(mobileCategorySection, mobileMonthSection);
+
+  // Mobile filter actions
+  const mobileFilterActions = createElement('div', { class: 'mobile-filter-actions' });
+  const mobileFilterReset = createElement('button', {
+    class: 'mobile-filter-reset',
+    type: 'button',
+  }, 'Reset');
+  const mobileFilterApply = createElement('button', {
+    class: 'mobile-filter-apply',
+    type: 'button',
+  }, 'Filter');
+  mobileFilterActions.append(mobileFilterReset, mobileFilterApply);
+
+  mobileFilterOverlay.append(mobileFilterHeader, mobileFilterContent, mobileFilterActions);
+
   block.innerHTML = '';
-  block.append(filters);
+  block.append(filters, mobileFilterButton, mobileFilterOverlay);
 
   // Initialize filters (native selects for state; custom menus for UI)
   populateSelect(categorySelect, buildCategoryOptions(blogIndex), 'All Categories');
@@ -524,6 +579,126 @@ export default async function decorate(block) {
     }
 
     triggerFilterChange(categorySelect, monthSelect, blogIndex);
+  });
+
+  // Mobile filter functionality
+  let mobileFilterState = {
+    categories: [...getSelectedValues(categorySelect)],
+    months: [...getSelectedValues(monthSelect)],
+  };
+
+  // Populate mobile category checkboxes
+  categoryOptions.forEach((opt) => {
+    if (opt.value === 'all') return;
+    const item = createCheckboxItem(opt.value, opt.label, (checked, value) => {
+      if (checked) {
+        if (!mobileFilterState.categories.includes(value)) {
+          mobileFilterState.categories.push(value);
+        }
+      } else {
+        mobileFilterState.categories = mobileFilterState.categories.filter((c) => c !== value);
+      }
+    });
+    // Set initial state
+    item.querySelector('input').checked = mobileFilterState.categories.includes(opt.value);
+    mobileCategoryContent.append(item);
+  });
+
+  // Populate mobile month checkboxes
+  buildMonthCheckboxes(mobileMonthContent, buildYearMonthMap(blogIndex), (checked, value) => {
+    if (checked) {
+      if (!mobileFilterState.months.includes(value)) {
+        mobileFilterState.months.push(value);
+      }
+    } else {
+      mobileFilterState.months = mobileFilterState.months.filter((m) => m !== value);
+    }
+  });
+
+  // Set initial mobile month checkbox states
+  mobileMonthContent.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+    if (checkbox.value.startsWith('year:')) {
+      checkbox.checked = mobileFilterState.months.some((month) => month.startsWith(`month:${checkbox.value.replace('year:', '')}-`));
+    } else {
+      checkbox.checked = mobileFilterState.months.includes(checkbox.value);
+    }
+  });
+
+  // Mobile filter event handlers
+  mobileFilterButton.addEventListener('click', () => {
+    mobileFilterOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  mobileFilterClose.addEventListener('click', () => {
+    mobileFilterOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  // Close overlay when clicking outside content
+  mobileFilterOverlay.addEventListener('click', (e) => {
+    if (e.target === mobileFilterOverlay) {
+      mobileFilterOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Section toggle functionality
+  mobileCategoryHeader.addEventListener('click', () => {
+    mobileCategorySection.classList.toggle('open');
+  });
+
+  mobileMonthHeader.addEventListener('click', () => {
+    mobileMonthSection.classList.toggle('open');
+  });
+
+  // Reset button
+  mobileFilterReset.addEventListener('click', () => {
+    // Reset mobile state
+    mobileFilterState = { categories: [], months: [] };
+
+    // Uncheck all mobile checkboxes
+    mobileCategoryContent.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+      cb.checked = false;
+    });
+    mobileMonthContent.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+      cb.checked = false;
+    });
+
+    // Reset desktop selects
+    categorySelect.selectedIndex = 0;
+    monthSelect.selectedIndex = 0;
+
+    // Update desktop summaries
+    catMulti.summary.textContent = 'All Categories';
+    monthMulti.summary.textContent = 'All Months';
+
+    // Apply filters
+    triggerFilterChange(categorySelect, monthSelect, blogIndex);
+  });
+
+  // Apply button
+  mobileFilterApply.addEventListener('click', () => {
+    // Update desktop selects with mobile state
+    Array.from(categorySelect.options).forEach((option) => {
+      option.selected = mobileFilterState.categories.includes(option.value);
+    });
+    Array.from(monthSelect.options).forEach((option) => {
+      option.selected = mobileFilterState.months.includes(option.value);
+    });
+
+    // Update desktop summaries
+    const selectedCategories = getSelectedValues(categorySelect);
+    const selectedMonths = getSelectedValues(monthSelect);
+    catMulti.summary.textContent = selectedCategories.length ? `${selectedCategories.length} selected` : 'All Categories';
+    monthMulti.summary.textContent = selectedMonths.length ? `${selectedMonths.length} selected` : 'All Months';
+
+    // Apply filters
+    triggerFilterChange(categorySelect, monthSelect, blogIndex);
+
+    // Close mobile overlay
+    mobileFilterOverlay.classList.remove('open');
+    document.body.style.overflow = '';
   });
 
   // Expose methods for external use
