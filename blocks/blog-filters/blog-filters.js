@@ -1,6 +1,94 @@
 import { createElement } from '../../utils/dom.js';
 
 /**
+ * Checks if the current page is the blog page.
+ * @returns {boolean}
+ */
+function isBlogPage() {
+  const path = window.location.pathname;
+  return path === '/blog' || path.endsWith('/blog');
+}
+
+/**
+ * Parses URL parameters for categories and months.
+ * @returns {{categories: string[], months: string[]}}
+ */
+function parseUrlParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const categories = urlParams.getAll('category');
+  const months = urlParams.getAll('month');
+  return { categories, months };
+}
+
+/**
+ * Processes month selections to only include year parameters when a year is selected.
+ * @param {string[]} months
+ * @returns {string[]}
+ */
+function processMonthSelections(months) {
+  const yearSelections = new Set();
+  const monthSelections = new Set();
+
+  months.forEach((selection) => {
+    if (selection.startsWith('year:')) {
+      yearSelections.add(selection);
+    } else if (selection.startsWith('month:')) {
+      monthSelections.add(selection);
+    }
+  });
+
+  // If a year is selected, only include the year parameter
+  // Otherwise, include individual month parameters
+  if (yearSelections.size > 0) {
+    return Array.from(yearSelections);
+  }
+
+  return Array.from(monthSelections);
+}
+
+/**
+ * Updates URL parameters with current filter selections.
+ * @param {string[]} categories
+ * @param {string[]} months
+ */
+function updateUrlParams(categories, months) {
+  if (!isBlogPage()) return;
+
+  const url = new URL(window.location);
+  // Clear existing filter parameters
+  url.searchParams.delete('category');
+  url.searchParams.delete('month');
+
+  // Add new parameters (strip categories/ prefix from category values)
+  categories.forEach((cat) => url.searchParams.append('category', cat.replace('categories/', '')));
+
+  // Only add year parameters, not individual months when year is selected
+  const processedMonths = processMonthSelections(months);
+  processedMonths.forEach((month) => url.searchParams.append('month', month));
+
+  // Update URL without page reload
+  window.history.replaceState({}, '', url.toString());
+}
+
+/**
+ * Navigates to blog page with filter parameters.
+ * @param {string[]} categories
+ * @param {string[]} months
+ */
+function navigateToBlogWithParams(categories, months) {
+  const url = new URL('/blog', window.location.origin);
+
+  // Add filter parameters (strip categories/ prefix from category values)
+  categories.forEach((cat) => url.searchParams.append('category', cat.replace('categories/', '')));
+
+  // Only add year parameters, not individual months when year is selected
+  const processedMonths = processMonthSelections(months);
+  processedMonths.forEach((month) => url.searchParams.append('month', month));
+
+  window.location.href = url.toString();
+}
+
+/**
  * Formats a tag string like "categories/walt-disney-world-resort" to a readable label.
  * @param {string} tag
  * @returns {string}
@@ -68,7 +156,7 @@ function createMultiSelect(titleText, placeholder) {
 /**
  * Builds unique category list from tags.
  * @param {Array<object>} items
- * @returns {Array<{value: string, label: string}>}
+ * @returns {Array<{value: string, label: string, originalValue: string}>}
  */
 function buildCategoryOptions(items) {
   const set = new Set();
@@ -76,8 +164,9 @@ function buildCategoryOptions(items) {
   const values = Array.from(set);
   values.sort((a, b) => formatCategoryLabel(a).localeCompare(formatCategoryLabel(b)));
   return values.map((v) => ({
-    value: v,
+    value: v.replace('categories/', ''), // Strip the categories/ prefix
     label: formatCategoryLabel(v),
+    originalValue: v, // Keep original for filtering
   }));
 }
 
@@ -232,7 +321,9 @@ function applyFilters(items, selectedCategories, selectedMonths) {
   let result = items;
 
   if (selectedCategories && selectedCategories.length > 0) {
-    const catSet = new Set(selectedCategories);
+    // Convert stripped category values back to original format for filtering
+    const originalCategories = selectedCategories.map((cat) => `categories/${cat}`);
+    const catSet = new Set(originalCategories);
     result = result.filter((it) => Array.isArray(it.tags) && it.tags.some((t) => catSet.has(t)));
   }
 
@@ -254,6 +345,11 @@ function triggerFilterChange(categorySelect, monthSelect, blogIndex) {
   const selectedCategories = getSelectedValues(categorySelect);
   const selectedMonths = getSelectedValues(monthSelect);
   const filteredItems = applyFilters(blogIndex, selectedCategories, selectedMonths);
+
+  // Update URL parameters if on blog page
+  if (isBlogPage()) {
+    updateUrlParams(selectedCategories, selectedMonths);
+  }
 
   // Dispatch custom event with filtered data
   const event = new CustomEvent('blog-filter-change', {
@@ -307,6 +403,38 @@ export default async function decorate(block) {
   populateSelect(categorySelect, buildCategoryOptions(blogIndex), 'All Categories');
   populateMonthSelect(monthSelect, buildYearMonthMap(blogIndex));
 
+  // Initialize filters from URL parameters
+  const urlParams = parseUrlParams();
+  if (urlParams.categories.length > 0 || urlParams.months.length > 0) {
+    // Set category selections (add categories/ prefix back for matching)
+    urlParams.categories.forEach((cat) => {
+      const option = Array.from(categorySelect.options).find((o) => o.value === cat);
+      if (option) option.selected = true;
+    });
+
+    // Set month selections - handle year selections by selecting all months in that year
+    urlParams.months.forEach((month) => {
+      if (month.startsWith('year:')) {
+        const year = month.replace('year:', '');
+        // Select all months in this year
+        Array.from(monthSelect.options).forEach((option) => {
+          if (option.value.startsWith(`month:${year}-`)) {
+            option.selected = true;
+          }
+        });
+      } else {
+        const option = Array.from(monthSelect.options).find((o) => o.value === month);
+        if (option) option.selected = true;
+      }
+    });
+
+    // Update summary text to reflect URL parameter selections
+    const selectedCategories = getSelectedValues(categorySelect);
+    const selectedMonths = getSelectedValues(monthSelect);
+    catMulti.summary.textContent = selectedCategories.length ? `${selectedCategories.length} selected` : 'All Categories';
+    monthMulti.summary.textContent = selectedMonths.length ? `${selectedMonths.length} selected` : 'All Months';
+  }
+
   // Build category checkbox menu
   const categoryOptions = Array.from(categorySelect.options).map(
     (o) => ({ value: o.value, label: o.textContent }),
@@ -318,6 +446,14 @@ export default async function decorate(block) {
       if (optionEl) optionEl.selected = checked;
       const selected = getSelectedValues(categorySelect);
       catMulti.summary.textContent = selected.length ? `${selected.length} selected` : 'All Categories';
+
+      // If not on blog page, navigate to blog with parameters
+      if (!isBlogPage()) {
+        const selectedMonths = getSelectedValues(monthSelect);
+        navigateToBlogWithParams(selected, selectedMonths);
+        return;
+      }
+
       triggerFilterChange(categorySelect, monthSelect, blogIndex);
     });
     catMulti.menu.append(item);
@@ -330,19 +466,64 @@ export default async function decorate(block) {
     if (optionEl) optionEl.selected = checked;
     const selected = getSelectedValues(monthSelect);
     monthMulti.summary.textContent = selected.length ? `${selected.length} selected` : 'All Months';
+
+    // If not on blog page, navigate to blog with parameters
+    if (!isBlogPage()) {
+      const selectedCategories = getSelectedValues(categorySelect);
+      navigateToBlogWithParams(selectedCategories, selected);
+      return;
+    }
+
     triggerFilterChange(categorySelect, monthSelect, blogIndex);
   });
+
+  // Update checkbox states to reflect URL parameter selections
+  if (urlParams.categories.length > 0 || urlParams.months.length > 0) {
+    // Update category checkboxes
+    const selectedCategories = getSelectedValues(categorySelect);
+    catMulti.menu.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+      checkbox.checked = selectedCategories.includes(checkbox.value);
+    });
+
+    // Update month checkboxes - handle year selections
+    const selectedMonths = getSelectedValues(monthSelect);
+    monthMulti.menu.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+      if (checkbox.value.startsWith('year:')) {
+        // For year checkboxes, check if this year is selected
+        checkbox.checked = selectedMonths.some((month) => month.startsWith(`month:${checkbox.value.replace('year:', '')}-`));
+      } else {
+        // For month checkboxes, check if this month is selected
+        checkbox.checked = selectedMonths.includes(checkbox.value);
+      }
+    });
+  }
 
   // native change hooks (if any manual changes occur)
   categorySelect.addEventListener('change', () => {
     const selected = getSelectedValues(categorySelect);
     catMulti.summary.textContent = selected.length ? `${selected.length} selected` : 'All Categories';
-    triggerFilterChange(categorySelect, monthSelect, blogIndex, block);
+
+    // If not on blog page, navigate to blog with parameters
+    if (!isBlogPage()) {
+      const selectedMonths = getSelectedValues(monthSelect);
+      navigateToBlogWithParams(selected, selectedMonths);
+      return;
+    }
+
+    triggerFilterChange(categorySelect, monthSelect, blogIndex);
   });
   monthSelect.addEventListener('change', () => {
     const selected = getSelectedValues(monthSelect);
     monthMulti.summary.textContent = selected.length ? `${selected.length} selected` : 'All Months';
-    triggerFilterChange(categorySelect, monthSelect, blogIndex, block);
+
+    // If not on blog page, navigate to blog with parameters
+    if (!isBlogPage()) {
+      const selectedCategories = getSelectedValues(categorySelect);
+      navigateToBlogWithParams(selectedCategories, selected);
+      return;
+    }
+
+    triggerFilterChange(categorySelect, monthSelect, blogIndex);
   });
 
   // Expose methods for external use
