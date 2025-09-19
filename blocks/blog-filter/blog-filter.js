@@ -693,6 +693,12 @@ export default async function decorate(block) {
     catMulti.summary.textContent = selectedCategories.length ? `${selectedCategories.length} selected` : 'All Categories';
     monthMulti.summary.textContent = selectedMonths.length ? `${selectedMonths.length} selected` : 'All Months';
 
+    // If not on blog page, navigate to blog with parameters
+    if (!isBlogPage()) {
+      navigateToBlogWithParams(selectedCategories, selectedMonths);
+      return;
+    }
+
     // Apply filters
     triggerFilterChange(categorySelect, monthSelect, blogIndex);
 
