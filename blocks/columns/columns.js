@@ -2,6 +2,13 @@ export default function decorate(block) {
   const cols = [...block.firstElementChild.children];
   block.classList.add(`columns-${cols.length}-cols`);
 
+  block.classList.forEach((className) => {
+    if (/^\d/.test(className)) {
+      const columnSplitClass = `col-${className}`;
+      block.classList.replace(className, columnSplitClass);
+    }
+  });
+
   if (block.classList.contains('icon-separator')) {
     [...block.children].forEach((row) => {
       const columns = [...row.children];

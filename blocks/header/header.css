@@ -175,16 +175,16 @@ header {
         > li {
           font-weight: 500;
 
+          >i {
+            padding-right: var(--spacing-xs);
+            font-size: var(--icon-size-xs);
+          }
+
           >a {
             display: flex;
             padding: var(--spacing-xs);
             border-top: 1px solid var(--light-gray);
             align-items: center;
-
-            >i {
-              padding-right: var(--spacing-xs);
-              font-size: var(--icon-size-l);
-            }
 
             &:hover {
               color: var(--primary);
@@ -231,7 +231,7 @@ header {
 
           >span>i {
             padding-right: var(--spacing-xs);
-            font-size: var(--icon-size-l);
+            font-size: var(--icon-size-xs);
             vertical-align: middle;
           }
         }
@@ -517,6 +517,10 @@ header {
       top: 0;
       right: var(--spacing-m);
 
+      i {
+        font-size: var(--icon-size-s);
+      }
+
       @media (width >=1024px) {
         position: relative;
         right: unset;
@@ -538,7 +542,7 @@ header {
       }
 
       i {
-        font-size: var(--icon-size-l);
+        font-size: var(--icon-size-s);
         cursor: pointer;
       }
     }

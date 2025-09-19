@@ -12,6 +12,11 @@ main {
       }
     }
 
+    u {
+      font-size: var(--body-font-size-s);
+      text-decoration: none;
+    }
+
     &:first-of-type {
       &.hero-container {
         margin-top: 0;
@@ -61,11 +66,23 @@ main {
       }
     }
 
+    &.center {
+      text-align: center;
+    }
+
     &.full-width {
       > div {
         max-width: 100%;
         padding: 0;
       }
+    }
+
+    &.legal .default-content-wrapper {
+      font-size: var(--body-font-size-s);
+    }
+
+    &.narrow .default-content-wrapper {
+      max-width: var(--content-width-md);
     }
   }
 }

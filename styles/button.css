@@ -50,3 +50,11 @@ button.secondary:hover {
   background-color: var(--primary);
   color: var(--white);
 }
+
+button[disabled],
+button[disabled]:hover {
+  background-color: var(--light-gray);
+  border: 0;
+  color: var(--gray);
+  cursor: not-allowed;
+}

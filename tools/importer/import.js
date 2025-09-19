@@ -267,7 +267,6 @@ const handleBlogPosts = (main, metadata) => {
   const categories = [...main.querySelectorAll('.categories .media-body a')]
     .map((a) => a.textContent.trim().replace(/\s*,\s*$/, ''))
     .filter((cat) => cat.length > 0)
-    .map((cat) => cat.toLowerCase().replace(/\s+/g, '-'));
 
   metadata.author = authorName;
   metadata.date = date;
