@@ -278,6 +278,7 @@ export default async function decorate(block) {
   // Get blog index data from window object
   const blogIndex = await window.fetchBlogIndex();
   if (!blogIndex) {
+    // eslint-disable-next-line no-console
     console.error('Blog index not available. Make sure fetchBlogIndex() has been called first.');
     return;
   }
