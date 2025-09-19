@@ -1,6 +1,6 @@
 main {
   & > .section {
-    margin: var(--spacing-xxl) 0;
+    margin: var(--spacing-xl) 0;
 
     & > div {
       max-width: var(--site-max-width);
