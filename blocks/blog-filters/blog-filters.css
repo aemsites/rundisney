@@ -1,0 +1,117 @@
+.blog-filters {
+  .blog-filters-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    margin-bottom: var(--spacing-m);
+  }
+
+  .blog-filter {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--spacing-xxs);
+    font-weight: 600;
+    color: var(--text-color);
+    width: 100%;
+  }
+
+  /* Hide native selects; using custom multi-select dropdowns */
+  .blog-filter-select {
+    display: none;
+  }
+
+  /* Multi-select dropdown */
+  .multi-select {
+    position: relative;
+    display: inline-block;
+    min-width: 100%;
+  }
+
+  .multi-select-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--overlay-border-color, #ddd);
+    border-radius: 6px;
+    background: var(--background-color);
+    color: inherit;
+    cursor: pointer;
+    user-select: none;
+    margin: 0;
+  }
+
+  .multi-select-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xxs);
+    text-align: left;
+  }
+
+  .multi-select-title {
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  .multi-select-summary {
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  .multi-select-caret {
+    margin-left: auto;
+    border: 4px solid transparent;
+    border-top-color: currentcolor;
+  }
+
+  .multi-select-menu {
+    position: absolute;
+    top: calc(100%);
+    left: 0;
+    z-index: 1000;
+    background: var(--background-color);
+    border: 1px solid var(--overlay-border-color, #ddd);
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0 0 0 / 12%);
+    padding: 8px;
+    min-width: 100%;
+    overflow: auto;
+    display: none;
+  }
+
+  .multi-select.open > .multi-select-menu {
+    display: block;
+  }
+
+  .multi-select-item,
+  .multi-select-group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 4px;
+    cursor: pointer;
+  }
+
+  .multi-select-group {
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid rgba(0 0 0 / 8%);
+  }
+
+  .multi-select-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .multi-select-group-items {
+    padding-left: 24px;
+  }
+
+  .multi-select-empty {
+    color: var(--dark-color, #666);
+    padding: 6px 4px;
+  }
+}
