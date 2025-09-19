@@ -98,6 +98,7 @@ header {
         overflow: initial;
         text-overflow: initial;
         white-space: initial;
+        min-width: unset;
       }
 
       @media (width >=1024px) {
@@ -142,7 +143,6 @@ header {
 
     .nav-brand {
       grid-area: brand;
-      flex-basis: 128px;
       font-size: var(--heading-font-size-s);
       font-weight: 700;
       line-height: 1;
@@ -175,16 +175,16 @@ header {
         > li {
           font-weight: 500;
 
+          >i {
+            padding-right: var(--spacing-xs);
+            font-size: var(--icon-size-xs);
+          }
+
           >a {
             display: flex;
             padding: var(--spacing-xs);
             border-top: 1px solid var(--light-gray);
             align-items: center;
-
-            >i {
-              padding-right: var(--spacing-xs);
-              font-size: var(--icon-size-l);
-            }
 
             &:hover {
               color: var(--primary);
@@ -231,7 +231,7 @@ header {
 
           >span>i {
             padding-right: var(--spacing-xs);
-            font-size: var(--icon-size-l);
+            font-size: var(--icon-size-xs);
             vertical-align: middle;
           }
         }
@@ -517,6 +517,11 @@ header {
       top: 0;
       right: var(--spacing-m);
 
+      i {
+        font-size: var(--icon-size-s);
+        cursor: pointer;
+      }
+
       @media (width >=1024px) {
         position: relative;
         right: unset;
@@ -535,11 +540,6 @@ header {
         margin: 0;
         padding: 0;
         line-height: 0;
-      }
-
-      i {
-        font-size: var(--icon-size-l);
-        cursor: pointer;
       }
     }
   }

@@ -16,6 +16,10 @@ body:not(.blog-post-template) {
           max-width: var(--site-max-width);
           margin: var(--spacing-l) auto 0 auto;
           color: var(--text-color);
+
+          &:has(+ p) {
+            margin-bottom: var(--spacing-s);
+          }
         }
 
         img {
@@ -28,16 +32,21 @@ body:not(.blog-post-template) {
 
     &.overlay {
       .hero {
-        min-height: 300px;
+        min-height: 180px;
         padding: var(--spacing-xxxxl) var(--spacing-m);
         display: flex;
         justify-content: center;
         align-items: center;
 
+        @media (width >=1024px) {
+          min-height: 300px;
+        }
+
         h1 {
           max-width: var(--site-max-width);
           margin-left: auto;
           margin-right: auto;
+          margin-top: 0;
           color: var(--white);
         }
 
