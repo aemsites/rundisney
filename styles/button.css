@@ -3,6 +3,7 @@ button {
   box-sizing: border-box;
   display: inline-block;
   max-width: 100%;
+  min-width: 160px;
   margin: 12px 0;
   border: 2px solid var(--primary);
   border-radius: 4px;

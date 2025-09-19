@@ -39,7 +39,13 @@
     >div {
       background-color: var(--primary-light);
     }
-    
+
+    &:not(.icon-separator) {
+      >div > div:not(.columns-img-col) {
+        padding: var(--spacing-l) var(--spacing-m);
+      }
+    }
+
     >div .columns-content {
       padding: var(--spacing-s);
     }
@@ -48,30 +54,29 @@
   &.icon-separator {
     >div {
       position: relative;
-      
+
       @media (width < 1024px) {
         margin-bottom: calc(var(--spacing-l) + var(--spacing-s));
       }
-      
+
       @media (width >=1024px) {
         gap: 0;
       }
-      
-      @media (width >= 1024px) {
+
+      @media (width >=1024px) {
         >div:first-child .columns-content {
           padding-right: var(--spacing-xxxxl);
         }
-        
+
         >div:last-child .columns-content {
           padding-left: var(--spacing-xxxxl);
         }
-        
+
         >div:not(:first-child):not(:last-child) .columns-content {
           padding: 0 var(--spacing-xxxxl);
         }
       }
-      
-      
+
       .columns-icon-separator {
         display: flex;
         align-items: center;
@@ -86,7 +91,7 @@
         width: 60px;
         height: 60px;
         box-shadow: 0 2px var(--spacing-xxs) rgb(0 0 0 / 15%);
-        
+
         .icon,
         [class*="icon__"],
         [class*="icon-"] {
@@ -94,7 +99,7 @@
           color: inherit;
         }
       }
-      
+
       @media (width >=1024px) {
         .columns-icon-separator {
           position: absolute;
@@ -103,7 +108,7 @@
           transform: translate(-50%, -50%);
           width: 80px;
           height: 80px;
-          
+
           .icon,
           [class*="icon__"],
           [class*="icon-"] {
@@ -114,5 +119,4 @@
       }
     }
   }
-  
 }

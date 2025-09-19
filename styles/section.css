@@ -60,5 +60,12 @@ main {
         text-align: left;
       }
     }
+
+    &.full-width {
+      > div {
+        max-width: 100%;
+        padding: 0;
+      }
+    }
   }
 }
