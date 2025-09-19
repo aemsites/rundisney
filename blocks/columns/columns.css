@@ -177,6 +177,7 @@
       > div > div:first-child {
         flex: 2;
       }
+
       > div > div:last-child {
         flex: 8;
       }
@@ -188,6 +189,7 @@
       > div > div:first-child {
         flex: 3;
       }
+
       > div > div:last-child {
         flex: 7;
       }
@@ -199,6 +201,7 @@
       > div > div:first-child {
         flex: 4;
       }
+
       > div > div:last-child {
         flex: 6;
       }
@@ -210,6 +213,7 @@
       > div > div:first-child {
         flex: 6;
       }
+
       > div > div:last-child {
         flex: 4;
       }
@@ -221,6 +225,7 @@
       > div > div:first-child {
         flex: 7;
       }
+
       > div > div:last-child {
         flex: 3;
       }
@@ -232,6 +237,7 @@
       > div > div:first-child {
         flex: 8;
       }
+
       > div > div:last-child {
         flex: 2;
       }
