@@ -64,7 +64,6 @@
     display: flex;
     color: var(--dark-color, #666);
     font-size: var(--body-font-size-s);
-    gap: var(--spacing-xxs);
   }
 
   a.blog-home-card-tags-link {
@@ -107,6 +106,16 @@
       display: grid;
       grid-template-columns: 1fr 2fr;
       height: 100%;
+    }
+
+    .blog-home-card .blog-home-card-tags a {
+      display: unset;
+      color: var(--link-color, #06c);
+      text-decoration: none;
+    }
+
+    .blog-home-card .blog-home-card-tags a:hover {
+      text-decoration: underline;
     }
   }
 }
