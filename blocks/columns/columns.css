@@ -72,6 +72,7 @@
           padding-left: var(--spacing-xxxxl);
         }
 
+        /* stylelint-disable-next-line selector-not-notation */
         >div:not(:first-child):not(:last-child) .columns-content {
           padding: 0 var(--spacing-xxxxl);
         }
