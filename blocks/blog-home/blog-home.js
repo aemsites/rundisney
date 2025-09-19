@@ -1,6 +1,6 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { createElement } from '../../utils/dom.js';
-import { parseUrlParams, applyFilters } from '../blog-filter/blog-filter.js';
+import { parseUrlParams, applyFilters, formatCategoryLabel } from '../blog-filter/blog-filter.js';
 
 const PAGE_SIZE = 10;
 const state = {
@@ -38,6 +38,7 @@ function buildPostCard(item) {
     image,
     date,
     author,
+    tags,
   } = item;
   const article = createElement('article', { class: 'blog-home-card' });
   const link = createElement('a', { href: path, 'aria-label': title });
@@ -69,7 +70,15 @@ function buildPostCard(item) {
   const h3 = createElement('h3', { class: 'blog-home-card-title' }, title || '');
   const meta = createElement('p', { class: 'blog-home-card-date' }, date ? `${formatDate(date)} ${author ? `by ${author}` : ''}` : '');
   const desc = createElement('p', { class: 'blog-home-card-desc' }, description || '');
-  body.append(h3, meta, desc);
+  const tagsElement = createElement('p', { class: 'blog-home-card-tags' }, tags ? tags.map((tag) => {
+    // Use the same formatting logic as the blog filter dropdown
+    const displayName = formatCategoryLabel(tag);
+    // Create URL-friendly version for filtering
+    const urlFriendly = tag.replace(/^categories\//, '').replace(/\s+/g, '-').toLowerCase();
+    return `<a href="/blog?category=${urlFriendly}" class="blog-home-card-tags-link">${displayName}</a>`;
+  }).join(', ') : '');
+  tagsElement.prepend('Categories: ');
+  body.append(h3, meta, desc, tagsElement);
   link.append(body);
   article.append(link);
 

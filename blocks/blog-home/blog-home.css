@@ -60,6 +60,23 @@
     margin: 0;
   }
 
+  .blog-home-card-tags {
+    display: flex;
+    color: var(--dark-color, #666);
+    font-size: var(--body-font-size-s);
+    gap: var(--spacing-xxs);
+  }
+
+  a.blog-home-card-tags-link {
+    display: unset;
+    color: var(--link-color, #06c);
+    text-decoration: none;
+  }
+
+  .blog-home-card-tags-link:hover {
+    text-decoration: underline;
+  }
+
   .blog-home-no-results {
     text-align: center;
     color: var(--dark-color, #666);

@@ -93,7 +93,7 @@ function navigateToBlogWithParams(categories, months) {
  * @param {string} tag
  * @returns {string}
  */
-function formatCategoryLabel(tag) {
+export function formatCategoryLabel(tag) {
   if (!tag) return '';
   const last = tag.split('/').pop();
   return last
