@@ -37,6 +37,7 @@ function buildPostCard(item) {
     description,
     image,
     date,
+    author,
   } = item;
   const article = createElement('article', { class: 'blog-home-card' });
   const link = createElement('a', { href: path, 'aria-label': title });
@@ -66,7 +67,7 @@ function buildPostCard(item) {
 
   const body = createElement('div', { class: 'blog-home-card-body' });
   const h3 = createElement('h3', { class: 'blog-home-card-title' }, title || '');
-  const meta = createElement('p', { class: 'blog-home-card-date' }, date ? formatDate(date) : '');
+  const meta = createElement('p', { class: 'blog-home-card-date' }, date ? `${formatDate(date)} ${author ? `by ${author}` : ''}` : '');
   const desc = createElement('p', { class: 'blog-home-card-desc' }, description || '');
   body.append(h3, meta, desc);
   link.append(body);
