@@ -14,10 +14,10 @@ import {
   getMetadata,
   decorateBlock,
 } from './aem.js';
-
-const BLOG_INDEX_LIMIT = 500;
 // eslint-disable-next-line import/no-cycle
 import { loadFragment } from '../blocks/fragment/fragment.js';
+
+const BLOG_INDEX_LIMIT = 500;
 
 /**
  * Builds hero block and prepends to main in a new section.
