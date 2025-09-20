@@ -14,7 +14,6 @@ import {
   getMetadata,
   decorateBlock,
 } from './aem.js';
-
 // eslint-disable-next-line import/no-cycle
 import { loadFragment } from '../blocks/fragment/fragment.js';
 
