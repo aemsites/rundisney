@@ -3,23 +3,25 @@ body:not(.blog-post-template) {
     .hero-wrapper {
       max-width: unset;
       padding: 0;
-  
+
       .hero {
         position: relative;
         text-align: center;
-  
-        > div > div >  p {
+
+        >div>div>p {
           margin: 0;
         }
-  
+
         h1 {
           max-width: var(--site-max-width);
-          margin-left: auto;
-          margin-right: auto;
-          color: var(--background-color);
-          display: none;
+          margin: var(--spacing-l) auto 0 auto;
+          color: var(--text-color);
+
+          &:has(+ p) {
+            margin-bottom: var(--spacing-s);
+          }
         }
-  
+
         img {
           object-fit: cover;
           width: 100%;
@@ -27,20 +29,27 @@ body:not(.blog-post-template) {
         }
       }
     }
-  
-    &.content-hero {
+
+    &.overlay {
       .hero {
+        min-height: 180px;
         padding: var(--spacing-xxxxl) var(--spacing-m);
-  
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
         @media (width >=1024px) {
-          padding: calc(var(--spacing-xxxxl) * 2) var(--spacing-m);
+          min-height: 300px;
         }
-  
+
         h1 {
-          display: block;
+          max-width: var(--site-max-width);
+          margin-left: auto;
+          margin-right: auto;
           margin-top: 0;
+          color: var(--white);
         }
-  
+
         picture {
           position: absolute;
           z-index: -1;

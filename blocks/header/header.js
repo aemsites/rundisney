@@ -437,7 +437,7 @@ export default async function decorate(block) {
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
   hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-      <span class="icon size-l icon__menu-global-nav"></span>
+      <span class="icon size-s icon__menu-global-nav"></span>
     </button>`;
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
   nav.prepend(hamburger);

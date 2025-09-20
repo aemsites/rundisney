@@ -1,0 +1,120 @@
+.accordion {
+  .accordion-item {
+    margin-bottom: var(--spacing-s);
+    border-bottom: 1px solid var(--light-gray);
+
+    &:last-child {
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    summary {
+      width: 100%;
+      padding: var(--spacing-m) 0;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.2s ease;
+      font-family: var(--heading-font-family);
+      font-size: var(--heading-font-size-m);
+      font-weight: 600;
+      color: var(--navy);
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::-moz-list-bullet {
+        list-style-type: none;
+      }
+
+      &:hover {
+        color: var(--primary);
+      }
+
+      &:focus {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      .icon {
+        transition: transform 0.3s ease;
+        color: var(--text-color);
+        font-size: var(--icon-size-s);
+        transform: rotate(-90deg);
+      }
+    }
+
+    &[open] summary {
+      color: var(--primary);
+
+      .icon {
+        transform: rotate(0deg);
+      }
+    }
+
+    &[open] div {
+      max-height: 1000px;
+      opacity: 1;
+      padding: var(--spacing-m) 0 var(--spacing-l) 0;
+    }
+
+    div {
+      padding: 0;
+      background: none;
+      font-family: var(--body-font-family);
+      font-size: var(--body-font-size-m);
+      line-height: 1.6;
+      color: var(--navy);
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+
+      p {
+        margin: 0 0 var(--spacing-s) 0;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      ul,
+      ol {
+        margin: 0 0 var(--spacing-s) 0;
+        padding-left: var(--spacing-m);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      li {
+        margin-bottom: var(--spacing-xxs);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      a {
+        color: var(--primary);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .accordion-title {
+    flex: 1;
+    margin-left: var(--spacing-s);
+  }
+}

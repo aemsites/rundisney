@@ -12,9 +12,12 @@ import {
   loadSections,
   loadCSS,
   getMetadata,
+  decorateBlock,
 } from './aem.js';
 
 const BLOG_INDEX_LIMIT = 500;
+// eslint-disable-next-line import/no-cycle
+import { loadFragment } from '../blocks/fragment/fragment.js';
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -33,10 +36,13 @@ function buildHeroBlock(main) {
     return;
   }
 
-  const elems = [...section.children];
-  const filtered = elems.filter((el) => !el.classList.contains('section-metadata') && !el.classList.contains('alert'));
-  const block = buildBlock('hero', { elems: filtered });
-  section.append(block);
+  // eslint-disable-next-line no-bitwise
+  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+    const elems = [...section.children];
+    const filtered = elems.filter((el) => !el.classList.contains('section-metadata') && !el.classList.contains('alert'));
+    const block = buildBlock('hero', { elems: filtered });
+    section.append(block);
+  }
 }
 
 /**
@@ -69,13 +75,68 @@ function buildAutoBlocks(main) {
  * @param {Element} main The main element
  */
 // eslint-disable-next-line import/prefer-default-export
+/**
+ * Decorates links inside del tags to be disabled buttons
+ * @param {Element} element The container element
+ */
+function decorateDisabledButtons(element) {
+  element.querySelectorAll('del > a').forEach((a) => {
+    const button = document.createElement('button');
+    button.textContent = a.textContent;
+    button.classList.add('button');
+    button.setAttribute('disabled', '');
+    button.setAttribute('aria-disabled', 'true');
+
+    const del = a.parentElement;
+    del.parentNode.replaceChild(button, del);
+  });
+}
+
+/**
+ * Replaces a paragraph with a built block.
+ * @param link a link.
+ * @param block a block.
+ */
+function replaceParagraphWithBlock(link, block) {
+  const parent = link.parentElement;
+  if (parent && parent.tagName === 'P') {
+    parent.replaceWith(block);
+  } else {
+    link.replaceWith(block);
+  }
+}
+
+/**
+ * Builds a fragment given a link element.
+ * @param link the link.
+ */
+export function buildFragment(link) {
+  const block = buildBlock('fragment', link.cloneNode(true));
+  replaceParagraphWithBlock(link, block);
+  decorateBlock(block);
+}
+
+/**
+ * Decorates all links on a given page as fragments if they contain /fragments/ in the path.
+ * @param {Element} main
+ */
+function decorateFragmentLinks(main) {
+  main.querySelectorAll('a').forEach((link) => {
+    if (link.href.includes('/fragments/')) {
+      loadFragment(buildFragment(link));
+    }
+  });
+}
+
 export function decorateMain(main) {
   // hopefully forward compatible button decoration
   decorateButtons(main);
   decorateIcons(main);
+  decorateDisabledButtons(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateFragmentLinks(main);
 }
 
 /**

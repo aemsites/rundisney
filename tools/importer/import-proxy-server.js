@@ -172,6 +172,20 @@ async function prerenderPage(targetUrl) {
     );
 
      html = html.replace(
+       /<a([^>]*?)>\s*<img([^>]*?)>\s*<\/a>/g,
+       (match, anchorAttrs, imgAttrs) => {
+         const cleanImgAttrs = imgAttrs
+           .replace(/\s*ng-if="[^"]*"/g, '')
+           .replace(/\s*ng-class="[^"]*"/g, '')
+           .replace(/\s*ng-attr-[^=]*="[^"]*"/g, '')
+           .replace(/\s*image-data="[^"]*"/g, '')
+           .replace(/\s*ng-src="[^"]*"/g, '')
+           .replace(/\s*lazy-load="[^"]*"/g, '');
+         return `<img${cleanImgAttrs}>`;
+       }
+     );
+
+     html = html.replace(
        /<a([^>]*?)>([^<]*?)<\/a>/g,
        (match, attrs, content) => {
          let linkText = content.trim();
