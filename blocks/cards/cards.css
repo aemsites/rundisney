@@ -136,3 +136,11 @@
     }
   }
 }
+
+.cards.size-4 {
+  > ul {
+    @media (width >=1024px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}

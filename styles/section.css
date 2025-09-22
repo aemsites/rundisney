@@ -81,8 +81,16 @@ main {
       font-size: var(--body-font-size-s);
     }
 
-    &.narrow .default-content-wrapper {
-      max-width: var(--content-width-md);
+    &.narrow {
+      > div {
+        max-width: var(--content-width-md);
+        margin: 0 auto;
+      }
+    }
+
+    &.divider .default-content-wrapper {
+      border-top: 1px solid var(--light-gray);
+      padding-top: var(--spacing-m);
     }
   }
 }
