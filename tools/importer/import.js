@@ -190,7 +190,6 @@ const handleStoryCards = (main) => {
             }
             const mediaBody = row.querySelector('.media-body');
             const mediaRight = row.querySelector('.media-right');
-            console.log(row);
             const downloadLink = mediaRight ? mediaRight.querySelector('a') : null;
             
             const leftCol = mediaLeft ? mediaLeft.outerHTML : '';
@@ -256,6 +255,14 @@ const handleBlogPosts = (main, metadata) => {
     hr.after(blogFilterBlock);
   }
 
+  // h1 is always 'runDisney Blog' on every blog post. Remove it and make the h2,
+  // which is the actual title of the blog post, the h1.
+  const h1 = main.querySelector('h1');
+
+  if (h1) {
+    h1.remove();
+  }
+
   const heroImg = main.querySelector('.blogDetailCoverPhoto');
   if (heroImg) {
     heroImg.after(document.createElement('hr'));
@@ -281,8 +288,6 @@ const handleBlogPosts = (main, metadata) => {
   const date = main.querySelector('.authorDescription .date').textContent;
   const categories = [...main.querySelectorAll('.categories .media-body a')]
     .map((a) => a.textContent.trim().replace(/\s*,\s*$/, ''))
-    .filter((cat) => cat.length > 0)
-    .map((cat) => cat.toLowerCase().replace(/\s+/g, '-'));
 
   metadata.author = authorName;
   metadata.date = date;
@@ -441,7 +446,10 @@ const handleHeroes = (main) => {
       newH1.className = h2.className;
       newH1.innerHTML = h2.innerHTML;
       h2.replaceWith(newH1);
-      newH1.after(document.createElement('hr'));
+
+      if (!newH1.closest('.blogDetailHeading')) {
+        newH1.after(document.createElement('hr'));
+      }
     }
   }
 };

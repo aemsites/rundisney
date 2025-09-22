@@ -1,4 +1,4 @@
-.blog-post {
+.blog-post-template {
   & main {
     > .section {
       img {
@@ -6,11 +6,20 @@
       }
     }
 
+    .blog-post-title {
+      font-size: var(--heading-font-size-xl);
+      font-weight: 800;
+    }
+
     >.section:first-of-type {
       text-align: center;
 
       a {
         color: var(--text-color);
+
+        &:hover {
+          color: var(--primary);
+        }
       }
 
       h1 {
@@ -74,10 +83,6 @@
           flex-direction: row;
           margin-top: 0;
         }
-
-        i {
-          font-size: var(--icon-size-l);
-        }
       }
 
       & .share {
@@ -110,7 +115,6 @@
         font-size: var(--body-font-size-l);
 
         i {
-          font-size: var(--icon-size-l);
           margin-right: var(--spacing-xxxs);
         }
         
@@ -160,6 +164,9 @@
     align-items: center;
     gap: var(--spacing-xxs);
     margin-top: var(--spacing-m);
+    max-width: var(--site-max-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-m);
 
     & .categories-label {
       font-weight: 600;

@@ -89,6 +89,18 @@ main img {
   display: inline-block;
   vertical-align: middle;
 
+  &.size-s {
+    font-size: var(--icon-size-s);
+  }
+
+  &.size-xs {
+    font-size: var(--icon-size-xs);
+  }
+
+  &.size-xxs {
+    font-size: var(--icon-size-xxs);
+  }
+
   &.size-l {
     font-size: var(--icon-size-l);
   }

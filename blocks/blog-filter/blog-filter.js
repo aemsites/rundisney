@@ -59,8 +59,8 @@ function updateUrlParams(categories, months) {
   url.searchParams.delete('category');
   url.searchParams.delete('month');
 
-  // Add new parameters (strip categories/ prefix from category values)
-  categories.forEach((cat) => url.searchParams.append('category', cat.replace('categories/', '')));
+  // Add new parameters
+  categories.forEach((cat) => url.searchParams.append('category', cat));
 
   // Only add year parameters, not individual months when year is selected
   const processedMonths = processMonthSelections(months);
@@ -78,8 +78,8 @@ function updateUrlParams(categories, months) {
 function navigateToBlogWithParams(categories, months) {
   const url = new URL('/blog', window.location.origin);
 
-  // Add filter parameters (strip categories/ prefix from category values)
-  categories.forEach((cat) => url.searchParams.append('category', cat.replace('categories/', '')));
+  // Add filter parameters
+  categories.forEach((cat) => url.searchParams.append('category', cat));
 
   // Only add year parameters, not individual months when year is selected
   const processedMonths = processMonthSelections(months);
@@ -89,14 +89,13 @@ function navigateToBlogWithParams(categories, months) {
 }
 
 /**
- * Formats a tag string like "categories/walt-disney-world-resort" to a readable label.
- * @param {string} tag
+ * Formats a category string to a readable label.
+ * @param {string} category
  * @returns {string}
  */
-export function formatCategoryLabel(tag) {
-  if (!tag) return '';
-  const last = tag.split('/').pop();
-  return last
+export function formatCategoryLabel(category) {
+  if (!category) return '';
+  return category
     .replace(/-/g, ' ')
     .replace(/\s*&\s*/g, ' & ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -156,17 +155,16 @@ function createMultiSelect(titleText, placeholder) {
 /**
  * Builds unique category list from tags.
  * @param {Array<object>} items
- * @returns {Array<{value: string, label: string, originalValue: string}>}
+ * @returns {Array<{value: string, label: string}>}
  */
 function buildCategoryOptions(items) {
   const set = new Set();
-  items.forEach((it) => (it.tags || []).forEach((t) => { if (t && t.startsWith('categories/')) set.add(t); }));
+  items.forEach((it) => (it.tags || []).forEach((t) => { if (t) set.add(t); }));
   const values = Array.from(set);
   values.sort((a, b) => formatCategoryLabel(a).localeCompare(formatCategoryLabel(b)));
   return values.map((v) => ({
-    value: v.replace('categories/', ''), // Strip the categories/ prefix
+    value: v,
     label: formatCategoryLabel(v),
-    originalValue: v, // Keep original for filtering
   }));
 }
 
@@ -321,9 +319,7 @@ export function applyFilters(items, selectedCategories, selectedMonths) {
   let result = items;
 
   if (selectedCategories && selectedCategories.length > 0) {
-    // Convert stripped category values back to original format for filtering
-    const originalCategories = selectedCategories.map((cat) => `categories/${cat}`);
-    const catSet = new Set(originalCategories);
+    const catSet = new Set(selectedCategories);
     result = result.filter((it) => Array.isArray(it.tags) && it.tags.some((t) => catSet.has(t)));
   }
 
@@ -461,7 +457,7 @@ export default async function decorate(block) {
   // Initialize filters from URL parameters
   const urlParams = parseUrlParams();
   if (urlParams.categories.length > 0 || urlParams.months.length > 0) {
-    // Set category selections (add categories/ prefix back for matching)
+    // Set category selections
     urlParams.categories.forEach((cat) => {
       const option = Array.from(categorySelect.options).find((o) => o.value === cat);
       if (option) option.selected = true;

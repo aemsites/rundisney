@@ -67,7 +67,7 @@ function buildPostCard(item) {
   }
 
   const body = createElement('div', { class: 'blog-home-card-body' });
-  const h3 = createElement('h3', { class: 'blog-home-card-title' }, title || '');
+  const h3 = createElement('h3', { class: 'blog-home-card-title' }, title.replace(' | runDisney Blog', '') || '');
   const meta = createElement('p', { class: 'blog-home-card-date' }, date ? `${formatDate(date)} ${author ? `by ${author}` : ''}` : '');
   const desc = createElement('p', { class: 'blog-home-card-desc' }, description || '');
   const tagsElement = createElement('p', { class: 'blog-home-card-tags' }, tags ? tags.map((tag) => {
