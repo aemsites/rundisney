@@ -42,6 +42,10 @@
 
     .default-content-wrapper {
       text-align: left;
+
+      :is(h2, h3, h4, h5, h6) {
+        margin-top: var(--spacing-xxl);
+      }
     }
   }
 
