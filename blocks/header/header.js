@@ -449,6 +449,56 @@ export default async function decorate(block) {
   document.addEventListener('click', handleOutsideClick);
   document.addEventListener('keydown', handleEscapeKey);
 
+  const navTools = nav.querySelector('.nav-tools');
+  if (navTools) {
+    const searchIcon = navTools.querySelector('i');
+    if (searchIcon) {
+      const searchContainer = createElement('div', { class: 'nav-search-container' });
+      const searchForm = createElement('form', { class: 'nav-search-form', action: '/search-results', method: 'GET' });
+      const searchInput = createElement('input', {
+        type: 'search',
+        name: 'q',
+        placeholder: 'Search runDisney...',
+        'aria-label': 'Search',
+        class: 'nav-search-input',
+      });
+
+      searchForm.append(searchInput);
+      searchContainer.append(searchForm);
+      nav.prepend(searchContainer);
+
+      const toggleSearch = () => {
+        nav.classList.toggle('search-active');
+        if (nav.classList.contains('search-active')) {
+          searchInput.focus();
+          searchIcon.className = 'icon size-s icon__close-reversed';
+        } else {
+          searchInput.value = '';
+          searchIcon.className = 'icon size-s icon__search';
+        }
+      };
+
+      searchIcon.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleSearch();
+      });
+
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          toggleSearch();
+        }
+      });
+
+      searchForm.addEventListener('submit', (e) => {
+        const searchTerm = searchInput.value.trim();
+
+        if (!searchTerm) {
+          e.preventDefault();
+        }
+      });
+    }
+  }
+
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);

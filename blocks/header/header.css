@@ -22,8 +22,7 @@ header {
 
     &[aria-expanded='true'] {
       grid-template:
-        'hamburger brand' var(--nav-height)
-        'sections sections' 1fr
+        'hamburger brand' var(--nav-height) 'sections sections' 1fr
         'tools tools' var(--nav-height) / auto 1fr;
       min-height: 100dvh;
 
@@ -172,7 +171,7 @@ header {
         padding-left: 0;
         font-size: var(--body-font-size-m);
 
-        > li {
+        >li {
           font-weight: 500;
 
           >i {
@@ -195,7 +194,7 @@ header {
           >ul {
             margin-top: 0;
 
-            > li {
+            >li {
               font-weight: 400;
             }
           }
@@ -406,7 +405,7 @@ header {
           }
 
           &[aria-expanded='true'] {
-            > ul {
+            >ul {
               display: block;
             }
 
@@ -489,7 +488,7 @@ header {
         }
       }
 
-      &[aria-expanded='true'] > ul {
+      &[aria-expanded='true']>ul {
         display: block;
       }
     }
@@ -540,6 +539,46 @@ header {
         margin: 0;
         padding: 0;
         line-height: 0;
+      }
+    }
+
+    .nav-search-container {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      padding: var(--spacing-s);
+      z-index: 100;
+      border-top: 1px solid var(--light-gray);
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    &.search-active .nav-search-container {
+      display: block;
+      background: var(--light-gray-2);
+    }
+
+    .nav-search-form {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-m);
+      max-width: var(--site-max-width);
+      margin: auto;
+    }
+
+    .nav-search-input {
+      flex: 1;
+      padding: var(--spacing-xxs) var(--spacing-s);
+      border: 1px solid var(--light-gray);
+      font-size: var(--body-font-size-l);
+      outline: none;
+      background: var(--white);
+      font-family: var(--body-font-family);
+
+      &:focus {
+        border-color: var(--primary);
       }
     }
   }
