@@ -1,0 +1,115 @@
+.blog-home {
+  .blog-home-total-results {
+    font-weight: 600;
+    font-size: var(--body-font-size-l);
+    margin-bottom: var(--spacing-m);
+  }
+
+  .blog-home-results {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .blog-home-card {
+    background: var(--background-color);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--overlay-border-color, rgba(0 0 0 / 8%));
+    box-shadow: 0 1px 2px rgba(0 0 0 / 6%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .blog-home-card:hover,
+  .blog-home-card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0 0 0 / 12%);
+  }
+
+  .blog-home-card a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .blog-home-card-image img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .blog-home-card-body {
+    padding: var(--spacing-s) var(--spacing-m);
+  }
+
+  .blog-home-card-title {
+    font-size: var(--heading-font-size-s);
+    margin: 0 0 var(--spacing-xxs);
+  }
+
+  .blog-home-card-date {
+    color: var(--dark-color, #666);
+    font-size: var(--body-font-size-s);
+    margin: 0 0 var(--spacing-xxs);
+  }
+
+  .blog-home-card-desc {
+    margin: 0;
+  }
+
+  .blog-home-card-tags {
+    display: unset;
+    color: var(--dark-color, #666);
+    font-size: var(--body-font-size-s);
+  }
+
+  a.blog-home-card-tags-link {
+    color: var(--link-color, #06c);
+    text-decoration: none;
+    display: inline;
+    text-align: unset;
+  }
+
+  .blog-home-card-tags-link:hover {
+    text-decoration: underline;
+  }
+
+  .blog-home-no-results {
+    text-align: center;
+    color: var(--dark-color, #666);
+    padding: var(--spacing-m) 0;
+  }
+
+  .blog-home-sentinel {
+    width: 100%;
+    height: 1px;
+  }
+
+  @media (width >= 1024px) {
+    .blog-home-results {
+      grid-template-columns: 1fr;
+    }
+
+    .blog-home-card a {
+      color: inherit;
+      text-decoration: none;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      height: 100%;
+    }
+
+    .blog-home-card .blog-home-card-tags a {
+      display: unset;
+      color: var(--link-color, #06c);
+      text-decoration: none;
+      padding-left: var(--spacing-xxxxs);
+    }
+
+    .blog-home-card .blog-home-card-tags a:hover {
+      text-decoration: underline;
+    }
+  }
+}

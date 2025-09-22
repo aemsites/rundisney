@@ -14,9 +14,50 @@ import {
   getMetadata,
   decorateBlock,
 } from './aem.js';
-
 // eslint-disable-next-line import/no-cycle
 import { loadFragment } from '../blocks/fragment/fragment.js';
+
+const BLOG_INDEX_LIMIT = 500;
+
+/**
+ * Fetches the full blog index data and caches it in window.blogIndex.
+ * @returns {Promise<Array<object>>}
+ */
+async function fetchBlogIndex() {
+  // Return cached data if available
+  if (window.blogIndex) {
+    return window.blogIndex;
+  }
+  const url = new URL('/blog-index.json', window.location.origin);
+  // fetch plenty to cover all entries
+  url.searchParams.set('limit', BLOG_INDEX_LIMIT);
+  url.searchParams.set('offset', '0');
+
+  const response = await fetch(url.toString());
+  if (!response.ok) throw new Error('Failed to load blog index');
+  const json = await response.json();
+  const { data = [] } = json;
+  // normalize entries
+  const normalized = data
+    .filter((row) => row && row.path && row.template === 'blog-post')
+    .map((row) => ({
+      path: row.path,
+      title: row.title,
+      description: row.description,
+      image: row.image,
+      tags: Array.isArray(row.tags) ? row.tags : [],
+      date: typeof row.date === 'number' ? row.date : 0,
+      author: row.author,
+      robots: row.robots || '',
+    }))
+    .filter((row) => !String(row.robots).includes('noindex'));
+  // sort desc by publish date
+  normalized.sort((a, b) => (b.date || 0) - (a.date || 0));
+  // Cache the result
+  window.blogIndex = normalized;
+  window.blogIndexTotalCount = json.total;
+  return normalized;
+}
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -249,6 +290,9 @@ async function loadPage() {
   await loadLazy(document);
   loadDelayed();
 }
+
+// Make fetchBlogIndex available globally
+window.fetchBlogIndex = fetchBlogIndex;
 
 loadPage();
 

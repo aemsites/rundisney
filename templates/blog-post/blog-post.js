@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { createElement, createIcon } from '../../utils/dom.js';
+import { formatCategoryLabel, navigateToBlogWithParams } from '../../blocks/blog-filter/blog-filter.js';
 
 export default function decorateBlogPostTemplate() {
   const author = getMetadata('author');
@@ -26,22 +27,22 @@ export default function decorateBlogPostTemplate() {
           tabindex: '0',
         }, [
           createElement('h5', {}, 'Share'),
-          createIcon('share', 'l'),
+          createIcon('share', 's'),
           createElement('div', { class: ['share-tooltip', 'tooltip'] }, [
             createElement('a', { href: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&description=${encodeURIComponent(document.title)}`, target: '_blank', 'aria-label': 'Share on Pinterest' }, [
-              createIcon('pinterest'),
+              createIcon('pinterest', 's'),
               createElement('span', {}, 'Pinterest'),
             ]),
             createElement('a', { href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, target: '_blank', 'aria-label': 'Share on Facebook' }, [
-              createIcon('facebook'),
+              createIcon('facebook', 's'),
               createElement('span', {}, 'Facebook'),
             ]),
             createElement('a', { href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(document.title)}`, target: '_blank', 'aria-label': 'Share on Twitter' }, [
-              createIcon('twitter'),
+              createIcon('twitter', 's'),
               createElement('span', {}, 'Twitter'),
             ]),
             createElement('a', { href: `mailto:?subject=${encodeURIComponent(document.title)}&body=${encodeURIComponent(`Check out this blog post: ${window.location.href}`)}`, 'aria-label': 'Share via Email' }, [
-              createIcon('email'),
+              createIcon('email', 's'),
               createElement('span', {}, 'Email'),
             ]),
           ]),
@@ -50,7 +51,7 @@ export default function decorateBlogPostTemplate() {
     ]),
     createElement('div', { class: 'blog-metadata' }, [
       createElement('div', { class: 'author' }, [
-        createIcon('characters', 'xxl'),
+        createIcon('characters', 'l'),
         createElement('span', {}, `by ${author}`),
       ]),
       createElement('div', { class: 'date' }, [
@@ -65,15 +66,24 @@ export default function decorateBlogPostTemplate() {
     shareButton.setAttribute('aria-expanded', shareButton.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
   });
 
-  const postWrapper = main.querySelector('.default-content-wrapper');
+  const featuredBlogsWrapper = main.querySelector('.featured-blogs-container');
   const tags = getMetadata('article:tag');
   const postTags = tags.split(',').map((tag) => tag.trim());
 
-  if (postWrapper) {
+  if (featuredBlogsWrapper) {
     const categoriesElement = createElement('div', { class: 'post-categories' }, [
       createElement('span', { class: 'categories-label' }, 'Categories:'),
       createElement('div', {}, postTags.map((tag, index) => {
-        const tagLink = createElement('a', { href: `/blog?category=${tag.replace(/\s+/g, '-').toLowerCase()}`, title: `View all posts in ${tag}` }, tag);
+        const displayName = formatCategoryLabel(tag);
+        const tagLink = createElement('a', {
+          href: '#',
+          title: `View all posts in ${displayName}`,
+        }, displayName);
+
+        tagLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          navigateToBlogWithParams([tag], []);
+        });
 
         if (index < postTags.length - 1) {
           return [tagLink, createElement('span', {}, ', ')];
@@ -83,8 +93,9 @@ export default function decorateBlogPostTemplate() {
       }).flat()),
     ]);
 
-    postWrapper.append(categoriesElement);
+    featuredBlogsWrapper.before(categoriesElement);
   }
 
   hero.append(blogPostInfo);
+  hero.prepend(createElement('div', { class: 'blog-post-title' }, createElement('a', { href: '/blog' }, [createElement('em', {}, 'run'), 'Disney Blog'])));
 }
