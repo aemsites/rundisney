@@ -60,6 +60,38 @@ async function fetchBlogIndex() {
 }
 
 /**
+ * Fetches the full query index data and caches it in window.queryIndex.
+ * @returns {Promise<Array<object>>}
+ */
+export async function fetchQueryIndex() {
+  // Return cached data if available
+  if (window.queryIndex) {
+    return window.queryIndex;
+  }
+  const response = await fetch('/query-index.json');
+  if (!response.ok) throw new Error('Failed to load query index');
+  const json = await response.json();
+  const { data = [] } = json;
+  // normalize entries
+  const normalized = data
+    .map((row) => ({
+      path: row.path,
+      title: row.title,
+      description: row.description,
+      image: row.image,
+      tags: Array.isArray(row.tags) ? row.tags : [],
+      date: typeof row.date === 'number' ? row.date : 0,
+      author: row.author,
+      robots: row.robots || '',
+      template: row.template,
+    }))
+    .filter((row) => !String(row.robots).includes('noindex'));
+  // Cache the result
+  window.queryIndex = normalized;
+  return normalized;
+}
+
+/**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
  */
