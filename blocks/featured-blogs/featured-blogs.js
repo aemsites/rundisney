@@ -1,4 +1,5 @@
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
+import { createElement } from '../../utils/dom.js';
 
 function buildFeaturedCard(item) {
   const {
@@ -55,6 +56,7 @@ export default async function decorate(block) {
     cardsBlock.classList.add('clickable');
 
     block.innerHTML = '';
+    block.appendChild(createElement('h3', {}, 'Featured Blogs'));
     block.appendChild(cardsBlock);
     decorateBlock(cardsBlock);
     await loadBlock(cardsBlock);
