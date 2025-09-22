@@ -75,7 +75,7 @@ function updateUrlParams(categories, months) {
  * @param {string[]} categories
  * @param {string[]} months
  */
-function navigateToBlogWithParams(categories, months) {
+export function navigateToBlogWithParams(categories, months) {
   const url = new URL('/blog', window.location.origin);
 
   // Add filter parameters

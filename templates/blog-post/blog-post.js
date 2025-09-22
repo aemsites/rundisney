@@ -1,6 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { createElement, createIcon } from '../../utils/dom.js';
-import { formatCategoryLabel } from '../../blocks/blog-filter/blog-filter.js';
+import { formatCategoryLabel, navigateToBlogWithParams } from '../../blocks/blog-filter/blog-filter.js';
 
 export default function decorateBlogPostTemplate() {
   const author = getMetadata('author');
@@ -74,11 +74,16 @@ export default function decorateBlogPostTemplate() {
     const categoriesElement = createElement('div', { class: 'post-categories' }, [
       createElement('span', { class: 'categories-label' }, 'Categories:'),
       createElement('div', {}, postTags.map((tag, index) => {
-        // Use the same formatting logic as the blog filter dropdown
         const displayName = formatCategoryLabel(tag);
-        // Create URL-friendly version for filtering
-        const urlFriendly = tag.replace(/\s+/g, '-').toLowerCase();
-        const tagLink = createElement('a', { href: `/blog?category=${urlFriendly}`, title: `View all posts in ${displayName}` }, displayName);
+        const tagLink = createElement('a', {
+          href: '#',
+          title: `View all posts in ${displayName}`,
+        }, displayName);
+
+        tagLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          navigateToBlogWithParams([tag], []);
+        });
 
         if (index < postTags.length - 1) {
           return [tagLink, createElement('span', {}, ', ')];

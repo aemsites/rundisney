@@ -67,7 +67,6 @@
   }
 
   a.blog-home-card-tags-link {
-    display: unset;
     color: var(--link-color, #06c);
     text-decoration: none;
     display: inline;
