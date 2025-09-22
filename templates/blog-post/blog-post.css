@@ -11,6 +11,10 @@
       font-weight: 800;
       border-bottom: 1px solid var(--light-gray);
       padding-bottom: var(--spacing-s);
+      max-width: var(--site-max-width);
+      margin: 0 auto;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     >.section:first-of-type {
