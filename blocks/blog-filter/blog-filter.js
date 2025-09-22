@@ -1,4 +1,4 @@
-import { createElement } from '../../utils/dom.js';
+import { createElement, createIcon } from '../../utils/dom.js';
 
 /**
  * Checks if the current page is the blog page.
@@ -132,7 +132,7 @@ function createMultiSelect(titleText, placeholder) {
   const text = createElement('div', { class: 'multi-select-text' });
   const title = createElement('span', { class: 'multi-select-title' }, titleText);
   const summary = createElement('span', { class: 'multi-select-summary' }, placeholder);
-  const caret = createElement('i', { class: 'multi-select-caret' });
+  const caret = createIcon('norgie-opened');
   text.append(title, summary);
   trigger.append(text, caret);
   const menu = createElement('div', { class: 'multi-select-menu' });
