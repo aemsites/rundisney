@@ -195,7 +195,7 @@ function handleDropdownHover(navSection, shouldOpen, event = null) {
         }
       }
     }
-  } else if (!event || isMouseOutsideDropdown(navSection, event)) {
+  } else {
     navSection.setAttribute('aria-expanded', 'false');
   }
 }
