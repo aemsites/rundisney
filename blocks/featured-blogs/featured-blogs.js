@@ -1,17 +1,23 @@
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import { createElement } from '../../utils/dom.js';
+import { formatDate } from '../../utils/date.js';
 
 function buildFeaturedCard(item) {
   const {
     path,
     title,
     image,
+    description,
+    date,
+    author,
   } = item;
 
   const imageHtml = image ? `<picture><img src="${image}" alt="${title}"></picture>` : '';
   const titleHtml = `<h3>${title.replace(' | runDisney Blog', '')}</h3>`;
+  const descHtml = `<span class="featured-blog-description">${description || ''}</span>`;
+  const metaHtml = `<span class="featured-blog-meta">${date ? `${formatDate(date)} ${author ? `by ${author}` : ''}` : ''}</span>`;
   const linkHtml = `<a href="${path}">Read More</a>`;
-  return [imageHtml, titleHtml, linkHtml];
+  return [imageHtml, metaHtml, titleHtml, descHtml, linkHtml];
 }
 
 export default async function decorate(block) {

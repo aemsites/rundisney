@@ -1,6 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { createElement } from '../../utils/dom.js';
 import { parseUrlParams, applyFilters, formatCategoryLabel } from '../blog-filter/blog-filter.js';
+import { formatDate } from '../../utils/date.js';
 
 const PAGE_SIZE = 10;
 const state = {
@@ -10,20 +11,6 @@ const state = {
   observer: null,
   totalCount: 0,
 };
-
-/**
- * Formats a unix epoch seconds date to "Month D, YYYY".
- * @param {number} epochSeconds
- * @returns {string}
- */
-function formatDate(epochSeconds) {
-  const date = new Date(epochSeconds * 1000);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
 
 /**
  * Builds a post card element.

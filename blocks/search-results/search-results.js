@@ -1,6 +1,7 @@
 import { fetchQueryIndex } from '../../scripts/scripts.js';
 import { createElement, createIcon } from '../../utils/dom.js';
 import createShareButton from '../../utils/share.js';
+import { formatDate } from '../../utils/date.js';
 
 export default async function decorate(block) {
   const params = new URLSearchParams(window.location.search);
@@ -91,21 +92,6 @@ export default async function decorate(block) {
     if (hasDesc) return 'description';
 
     return null;
-  }
-
-  function formatDate(epochSeconds) {
-    if (!epochSeconds || epochSeconds < 1000000000) return '';
-    try {
-      const d = new Date(epochSeconds * 1000);
-      return d.toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        timeZone: 'UTC',
-      });
-    } catch (e) {
-      return '';
-    }
   }
 
   function escapeHtml(str) {
