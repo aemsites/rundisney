@@ -1,0 +1,252 @@
+@import url('../../styles/share.css');
+
+.search-results-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: var(--spacing-m);
+
+  @media (width >=1024px) {
+    flex-direction: row;
+  }
+}
+
+.search-results-input {
+  flex: 1;
+  min-width: 160px;
+  width: 100%;
+  padding: var(--spacing-xxxs) var(--spacing-xs);
+  height: 44px;
+  border: 1px solid var(--light-gray);
+
+  @media (width >=1024px) {
+    width: auto;
+  }
+}
+
+.search-results-submit {
+  width: 100%;
+
+  @media (width >=1024px) {
+    width: auto;
+  }
+}
+
+.search-results-tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  gap: 0;
+  border-bottom: 2px solid var(--light-gray);
+  margin: 8px 0 12px;
+}
+
+.search-results-tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 8px 12px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--link-color);
+  text-align: center;
+}
+
+.search-results-tab.is-active {
+  color: var(--text-color);
+}
+
+.search-results-indicator {
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 50%;
+  height: 3px;
+  background: var(--primary);
+  transition: left 220ms ease;
+}
+
+.search-results-panel {
+  display: none;
+}
+
+.search-results-panel.is-active {
+  display: block;
+}
+
+.search-results-info {
+  margin: 8px 0 16px;
+  color: var(--text-color);
+  font-weight: 600;
+  border-bottom: 1px solid var(--light-gray);
+  padding: var(--spacing-m) 0;
+  font-size: var(--body-font-size-xl);
+}
+
+.search-results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.search-results-item {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 12px;
+  border-bottom: 1px solid var(--light-gray);
+  padding-bottom: 12px;
+
+  a {
+    color: var(--text-color);
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+.search-results-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.search-results-thumb-wrap {
+  width: 180px;
+  height: 120px;
+  display: grid;
+  place-items: center;
+}
+
+#panel-site {
+  .search-results-inner {
+    grid-template-columns: 1fr auto;
+  }
+  
+  .search-results-thumb-wrap {
+    display: none;
+  }
+}
+
+.search-results-thumb {
+  width: 180px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 2px;
+  background: #f6f6f6;
+}
+
+.search-results-title {
+  font-weight: 700;
+  display: inline-block;
+  margin: 0 0 4px;
+  color: var(--text-color);
+}
+
+.search-results-meta {
+  font-size: 0.875rem;
+  color: var(--gray);
+  margin-bottom: 8px;
+}
+
+.search-results-desc {
+  margin: 0 0 8px;
+}
+
+.search-results-cats {
+  font-size: 0.875rem;
+  color: var(--gray);
+}
+
+.search-results-cats .label {
+  color: var(--gray);
+}
+
+.search-results-cat a {
+  color: var(--link-color);
+}
+
+.search-results-cats a:hover {
+  text-decoration: underline;
+}
+
+.search-results-hl {
+  font-weight: 700;
+  background: var(--primary-light);
+  padding: 1px var(--spacing-xxxxs);
+  color: var(--primary);
+}
+
+.search-results-arrow {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  color: var(--light-gray);
+}
+
+.search-results-bottom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gray);
+}
+
+.linklike {
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+  padding: 0;
+}
+
+.search-results-empty {
+  color: var(--color-gray-700, #555);
+}
+
+@media (width < 1024px) {
+  .search-results-inner {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .search-results-thumb-wrap {
+    width: 100%;
+    height: 200px;
+    order: -1;
+  }
+
+  .search-results-thumb {
+    width: 100%;
+    height: 200px;
+  }
+
+  .search-results-arrow {
+    display: none;
+  }
+}
+
+@media (width >=1024px) {
+  .search-results-inner {
+    grid-template-columns: 240px 1fr 32px;
+  }
+
+  #panel-site .search-results-inner {
+    grid-template-columns: 1fr 32px;
+  }
+
+  .search-results-thumb-wrap,
+  .search-results-thumb {
+    width: 240px;
+    height: 160px;
+  }
+
+  .search-results-bottom {
+    margin-left: 256px;
+  }
+}
