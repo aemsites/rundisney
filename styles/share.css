@@ -9,6 +9,10 @@
   position: relative;
   gap: var(--spacing-xxxs);
 
+  p {
+    margin: 0;
+  }
+
   &:hover {
     text-decoration: none;
   }

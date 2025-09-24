@@ -24,7 +24,7 @@ const createShareButton = (options = {}) => {
     role: 'button',
     tabindex: '0',
   }, [
-    createElement('h5', {}, 'Share'),
+    createElement('p', {}, 'Share'),
     createIcon('share', 's'),
     createElement('div', { class: ['share-tooltip', 'tooltip'] }, [
       createElement('a', {
