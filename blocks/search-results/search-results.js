@@ -1,5 +1,6 @@
 import { fetchQueryIndex } from '../../scripts/scripts.js';
-import { createElement } from '../../utils/dom.js';
+import { createElement, createIcon } from '../../utils/dom.js';
+import createShareButton from '../../utils/share.js';
 
 export default async function decorate(block) {
   const params = new URLSearchParams(window.location.search);
@@ -92,11 +93,16 @@ export default async function decorate(block) {
     return null;
   }
 
-  function formatDate(epochMs) {
-    if (!epochMs) return '';
+  function formatDate(epochSeconds) {
+    if (!epochSeconds || epochSeconds < 1000000000) return '';
     try {
-      const d = new Date(epochMs);
-      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+      const d = new Date(epochSeconds * 1000);
+      return d.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        timeZone: 'UTC',
+      });
     } catch (e) {
       return '';
     }
@@ -118,7 +124,7 @@ export default async function decorate(block) {
     return escaped.replace(regex, (m) => `<span class="search-results-hl">${m}</span>`);
   }
 
-  function renderList(list, parent, qTokens) {
+  function renderList(list, parent, qTokens, isBlogResults = false) {
     parent.textContent = '';
     if (!list.length) {
       parent.append(createElement('p', { class: 'search-results-empty' }, 'No results.'));
@@ -128,7 +134,9 @@ export default async function decorate(block) {
     list.forEach((item) => {
       const li = createElement('li', { class: 'search-results-item' });
 
-      const imgWrap = createElement('a', { href: item.path, class: 'search-results-thumb-wrap', 'aria-label': 'Open result' });
+      const mainLink = createElement('a', { href: item.path, class: 'search-results-link' });
+
+      const imgWrap = createElement('div', { class: 'search-results-thumb-wrap' });
       if (item.image) {
         const img = createElement('img', {
           src: item.image,
@@ -139,7 +147,7 @@ export default async function decorate(block) {
         imgWrap.append(img);
       }
 
-      const title = createElement('a', { href: item.path, class: 'search-results-title' });
+      const title = createElement('div', { class: 'search-results-title' });
       title.innerHTML = highlight(item.title || item.path, qTokens);
 
       const metaPieces = [];
@@ -166,15 +174,23 @@ export default async function decorate(block) {
 
       const content = createElement('div', { class: 'search-results-content' }, [title, meta, desc, catsLine].filter(Boolean));
 
-      const arrow = createElement('a', { href: item.path, class: 'search-results-arrow', 'aria-label': 'Open result' });
-
-      const bottom = createElement('div', { class: 'search-results-bottom' }, [
-        createElement('button', { class: 'linklike search-results-share', type: 'button' }, 'Share'),
-      ]);
+      const arrow = createElement('div', { class: 'search-results-arrow' }, createIcon('next'));
 
       const inner = createElement('div', { class: 'search-results-inner' }, [imgWrap, content, arrow]);
 
-      li.append(inner, bottom);
+      mainLink.append(inner);
+
+      const elements = [mainLink];
+
+      if (isBlogResults) {
+        const absoluteUrl = new URL(item.path, window.location.origin).href;
+        const bottom = createElement('div', { class: 'search-results-bottom' }, [
+          createShareButton({ url: absoluteUrl, title: item.title }),
+        ]);
+        elements.push(bottom);
+      }
+
+      li.append(...elements);
       ul.append(li);
     });
     parent.append(ul);
@@ -222,8 +238,8 @@ export default async function decorate(block) {
     updateTabsCounts(site.length, blog.length);
     resultsInfo.textContent = query ? `${site.length + blog.length} Results Found for "${query}"` : '';
 
-    renderList(site, sitePanel, qTokens);
-    renderList(blog, blogPanel, qTokens);
+    renderList(site, sitePanel, qTokens, false);
+    renderList(blog, blogPanel, qTokens, true);
   }
 
   tabs.addEventListener('click', (e) => {

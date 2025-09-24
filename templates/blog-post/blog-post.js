@@ -1,6 +1,7 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { createElement, createIcon } from '../../utils/dom.js';
 import { formatCategoryLabel, navigateToBlogWithParams } from '../../blocks/blog-filter/blog-filter.js';
+import createShareButton from '../../utils/share.js';
 
 export default function decorateBlogPostTemplate() {
   const author = getMetadata('author');
@@ -19,34 +20,7 @@ export default function decorateBlogPostTemplate() {
         ]),
       ]),
       createElement('div', { class: 'share' }, [
-        createElement('a', {
-          class: 'share-button',
-          'aria-label': 'Share this post',
-          'aria-expanded': 'false',
-          role: 'button',
-          tabindex: '0',
-        }, [
-          createElement('h5', {}, 'Share'),
-          createIcon('share', 's'),
-          createElement('div', { class: ['share-tooltip', 'tooltip'] }, [
-            createElement('a', { href: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&description=${encodeURIComponent(document.title)}`, target: '_blank', 'aria-label': 'Share on Pinterest' }, [
-              createIcon('pinterest', 's'),
-              createElement('span', {}, 'Pinterest'),
-            ]),
-            createElement('a', { href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, target: '_blank', 'aria-label': 'Share on Facebook' }, [
-              createIcon('facebook', 's'),
-              createElement('span', {}, 'Facebook'),
-            ]),
-            createElement('a', { href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(document.title)}`, target: '_blank', 'aria-label': 'Share on Twitter' }, [
-              createIcon('twitter', 's'),
-              createElement('span', {}, 'Twitter'),
-            ]),
-            createElement('a', { href: `mailto:?subject=${encodeURIComponent(document.title)}&body=${encodeURIComponent(`Check out this blog post: ${window.location.href}`)}`, 'aria-label': 'Share via Email' }, [
-              createIcon('email', 's'),
-              createElement('span', {}, 'Email'),
-            ]),
-          ]),
-        ]),
+        createShareButton(),
       ]),
     ]),
     createElement('div', { class: 'blog-metadata' }, [
@@ -59,12 +33,6 @@ export default function decorateBlogPostTemplate() {
       ]),
     ]),
   ]);
-
-  const shareButton = blogPostInfo.querySelector('.share-button');
-  shareButton.addEventListener('click', () => {
-    shareButton.querySelector('.share-tooltip').classList.toggle('visible');
-    shareButton.setAttribute('aria-expanded', shareButton.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
-  });
 
   const featuredBlogsWrapper = main.querySelector('.featured-blogs-container');
   const tags = getMetadata('article:tag');

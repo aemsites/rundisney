@@ -1,3 +1,5 @@
+@import url('../../styles/share.css');
+
 .blog-post-template {
   & main {
     > .section {
@@ -104,34 +106,7 @@
         }
       }
 
-      & .share-button {
-        display: flex;
-        align-items: center;
-        background: none;
-        border: 0;
-        color: var(--text-color);
-        text-decoration: none;
-        cursor: pointer;
-        position: relative;
-        gap: var(--spacing-xxxs);
-      }
 
-      & .share-tooltip {
-        display: none;
-        width: 8rem;
-        right: 0;
-        top: var(--spacing-l);
-        font-size: var(--body-font-size-l);
-
-        i {
-          margin-right: var(--spacing-xxxs);
-        }
-        
-        &.visible {
-          display: flex;
-          flex-direction: column;
-        }
-      }
     }
 
     & .blog-metadata {

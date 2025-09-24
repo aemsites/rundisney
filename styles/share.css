@@ -1,0 +1,41 @@
+.share-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--text-color);
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  gap: var(--spacing-xxxs);
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  .share-tooltip {
+    display: none;
+    width: 8rem;
+    right: 0;
+    top: var(--spacing-l);
+    font-size: var(--body-font-size-l);
+
+    a {
+        text-decoration: none;
+        margin-bottom: var(--spacing-xxs);
+
+        &:hover {
+            color: var(--primary);
+        }
+    }
+
+    i {
+      margin-right: var(--spacing-xxxs);
+    }
+    
+    &.visible {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
