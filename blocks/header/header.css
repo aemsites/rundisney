@@ -190,6 +190,17 @@ header {
               border-radius: var(--spacing-xxxs);
             }
           }
+          >p {
+            display: flex;
+            padding: var(--spacing-xs);
+            border-top: 1px solid var(--light-gray);
+            align-items: center;
+
+            &:hover {
+              color: var(--primary);
+              border-radius: var(--spacing-xxxs);
+            }
+          }
 
           >ul {
             margin-top: 0;

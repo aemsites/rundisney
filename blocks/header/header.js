@@ -390,7 +390,9 @@ export default async function decorate(block) {
         } else if (p.querySelector(':scope > picture')) {
           const img = p.querySelector(':scope img');
           p.replaceWith(img);
-        } else {
+         } else if (p.querySelector(':scope > p,:scope > i')) {
+          p.replaceWith(p);
+          } else {
           const span = createElement('span', {}, p.textContent);
           p.replaceWith(span);
         }
