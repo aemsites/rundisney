@@ -168,6 +168,12 @@
     font-weight: 600;
     color: var(--text-color);
     width: 100%;
+
+    &:first-child {
+      .multi-select-trigger {
+        border-right: 0;
+      }
+    }
   }
 
   /* Hide native selects; using custom multi-select dropdowns */
@@ -222,7 +228,7 @@
     z-index: 1000;
     background: var(--background-color);
     border: 1px solid var(--overlay-border-color, #ddd);
-    border-radius: 8px;
+    border-top: 0;
     box-shadow: 0 6px 16px rgba(0 0 0 / 12%);
     padding: 8px;
     min-width: 100%;

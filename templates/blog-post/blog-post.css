@@ -85,6 +85,7 @@
         flex-direction: column;
         align-items: flex-start;
         margin-top: var(--spacing-s);
+        gap: var(--spacing-xs);
 
         @media (width >=1024px) {
           align-items: center;
