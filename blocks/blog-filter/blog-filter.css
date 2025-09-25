@@ -59,10 +59,15 @@
   .mobile-filter-close {
     background: none;
     border: none;
-    font-size: 24px;
     cursor: pointer;
     color: var(--text-color);
     padding: 4px;
+    width: auto;
+    min-width: unset;
+
+    > i {
+      font-size: var(--icon-size-s);
+    }
   }
 
   .mobile-filter-content {
@@ -146,7 +151,7 @@
   }
 
   /* Mobile-specific styles */
-  @media (width <= 600px) {
+  @media (width <=600px) {
     .blog-filters-container {
       display: none;
     }
@@ -225,7 +230,7 @@
     display: none;
   }
 
-  .multi-select.open > .multi-select-menu {
+  .multi-select.open>.multi-select-menu {
     display: block;
   }
 
