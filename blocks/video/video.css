@@ -1,0 +1,34 @@
+@import url('../../styles/share.css');
+
+.video {
+  width: 100%;
+}
+
+.video .video-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.video .video-wrapper video {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #000;
+  padding-bottom: var(--spacing-l);
+}
+
+.video .video-share {
+  position: absolute;
+  right: var(--spacing-m);
+  bottom: var(--spacing-xxs);
+  background: rgb(0 0 0 / 60%);
+  color: var(--white);
+  padding: var(--spacing-xxs) var(--spacing-xxs) var(--spacing-xxs) var(--spacing-xs);
+  border-radius: 999px;
+}
+
+.video .video-share .share-tooltip {
+  right: 0;
+  top: auto;
+  bottom: calc(100% + var(--spacing-xxs));
+}

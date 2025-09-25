@@ -118,6 +118,33 @@ function buildHeroBlock(main) {
 }
 
 /**
+ * Replaces a paragraph with a built block.
+ * @param link a link.
+ * @param block a block.
+ */
+function replaceParagraphWithBlock(link, block) {
+  const parent = link.parentElement;
+  if (parent && parent.tagName === 'P' && parent.children.length === 1) {
+    parent.replaceWith(block);
+  } else {
+    link.replaceWith(block);
+  }
+}
+
+/**
+ * Builds all video blocks in a container element.
+ * @param {Element} main The container element
+ */
+function buildVideoBlocks(main) {
+  const videos = main.querySelectorAll('a[href^="https://cdn5.parksmedia.wdprapps.disney.com"], a[href$=".mp4"]');
+  videos.forEach((video) => {
+    if (video.closest('.video.block')) return;
+    const videoBlock = buildBlock('video', video.cloneNode(true));
+    replaceParagraphWithBlock(video, videoBlock);
+  });
+}
+
+/**
  * load fonts.css and set a session storage flag
  */
 async function loadFonts() {
@@ -136,6 +163,7 @@ async function loadFonts() {
 function buildAutoBlocks(main) {
   try {
     buildHeroBlock(main);
+    buildVideoBlocks(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -162,20 +190,6 @@ function decorateDisabledButtons(element) {
     const del = a.parentElement;
     del.parentNode.replaceChild(button, del);
   });
-}
-
-/**
- * Replaces a paragraph with a built block.
- * @param link a link.
- * @param block a block.
- */
-function replaceParagraphWithBlock(link, block) {
-  const parent = link.parentElement;
-  if (parent && parent.tagName === 'P') {
-    parent.replaceWith(block);
-  } else {
-    link.replaceWith(block);
-  }
 }
 
 /**
