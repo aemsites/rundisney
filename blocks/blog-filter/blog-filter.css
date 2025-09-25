@@ -59,10 +59,15 @@
   .mobile-filter-close {
     background: none;
     border: none;
-    font-size: 24px;
     cursor: pointer;
     color: var(--text-color);
     padding: 4px;
+    width: auto;
+    min-width: unset;
+
+    > i {
+      font-size: var(--icon-size-s);
+    }
   }
 
   .mobile-filter-content {
@@ -146,7 +151,7 @@
   }
 
   /* Mobile-specific styles */
-  @media (width <= 600px) {
+  @media (width <=600px) {
     .blog-filters-container {
       display: none;
     }
@@ -163,6 +168,12 @@
     font-weight: 600;
     color: var(--text-color);
     width: 100%;
+
+    &:first-child {
+      .multi-select-trigger {
+        border-right: 0;
+      }
+    }
   }
 
   /* Hide native selects; using custom multi-select dropdowns */
@@ -217,7 +228,7 @@
     z-index: 1000;
     background: var(--background-color);
     border: 1px solid var(--overlay-border-color, #ddd);
-    border-radius: 8px;
+    border-top: 0;
     box-shadow: 0 6px 16px rgba(0 0 0 / 12%);
     padding: 8px;
     min-width: 100%;
@@ -225,7 +236,7 @@
     display: none;
   }
 
-  .multi-select.open > .multi-select-menu {
+  .multi-select.open>.multi-select-menu {
     display: block;
   }
 

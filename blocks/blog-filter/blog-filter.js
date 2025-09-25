@@ -408,7 +408,7 @@ export default async function decorate(block) {
     class: 'mobile-filter-close',
     type: 'button',
     'aria-label': 'Close filter',
-  }, '×');
+  }, createIcon('close-reversed', 'm'));
   mobileFilterHeader.append(mobileFilterTitle, mobileFilterClose);
 
   const mobileFilterContent = createElement('div', { class: 'mobile-filter-content' });

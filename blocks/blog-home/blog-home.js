@@ -1,7 +1,8 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { createElement } from '../../utils/dom.js';
+import { createElement, createIcon } from '../../utils/dom.js';
 import { parseUrlParams, applyFilters, formatCategoryLabel } from '../blog-filter/blog-filter.js';
 import { formatDate } from '../../utils/date.js';
+import createShareButton from '../../utils/share.js';
 
 const PAGE_SIZE = 10;
 const state = {
@@ -30,6 +31,8 @@ function buildPostCard(item) {
   const article = createElement('article', { class: 'blog-home-card' });
   const link = createElement('a', { href: path, 'aria-label': title });
 
+  const imageSection = createElement('div', { class: 'blog-home-card-image-section' });
+
   if (image) {
     const picture = createOptimizedPicture(
       image,
@@ -50,8 +53,18 @@ function buildPostCard(item) {
       ],
     );
     picture.classList.add('blog-home-card-image');
-    link.append(picture);
+    imageSection.append(picture);
   }
+
+  // Add share button underneath image, right-aligned
+  const shareButton = createShareButton({
+    url: new URL(path, window.location.origin).href,
+    title: title.replace(' | runDisney Blog', ''),
+  });
+  shareButton.classList.add('blog-home-card-share');
+
+  imageSection.append(shareButton);
+  link.append(imageSection);
 
   const body = createElement('div', { class: 'blog-home-card-body' });
   const h3 = createElement('h3', { class: 'blog-home-card-title' }, title.replace(' | runDisney Blog', '') || '');
@@ -65,8 +78,14 @@ function buildPostCard(item) {
     return `<a href="/blog?category=${urlFriendly}" class="blog-home-card-tags-link">${displayName}</a>`;
   }).join(', ') : '');
   tagsElement.prepend('Categories: ');
+
   body.append(h3, meta, desc, tagsElement);
-  link.append(body);
+
+  // Add next icon on the right side, vertically centered
+  const nextIcon = createIcon('next', 'm');
+  nextIcon.classList.add('blog-home-card-next');
+
+  link.append(body, nextIcon);
   article.append(link);
 
   return article;
