@@ -14,12 +14,13 @@
   height: auto;
   display: block;
   background: #000;
+  padding-bottom: var(--spacing-l);
 }
 
 .video .video-share {
   position: absolute;
   right: var(--spacing-m);
-  top: var(--spacing-m);
+  bottom: var(--spacing-xxs);
   background: rgb(0 0 0 / 60%);
   color: var(--white);
   padding: var(--spacing-xxs) var(--spacing-xxs) var(--spacing-xxs) var(--spacing-xs);
