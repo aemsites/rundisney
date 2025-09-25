@@ -19,6 +19,14 @@
     border-bottom: 1px solid var(--light-gray);
     position: relative;
     padding-bottom: var(--spacing-l);
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    padding: var(--spacing-s);
+
+    &:hover {
+      box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+      transform: translateY(-3px);
+    }
   }
 
   .blog-home-card > a {
