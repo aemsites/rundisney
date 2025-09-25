@@ -179,7 +179,7 @@ header {
             font-size: var(--icon-size-xs);
           }
 
-          >a {
+          >a,>p {
             display: flex;
             padding: var(--spacing-xs);
             border-top: 1px solid var(--light-gray);
@@ -189,18 +189,7 @@ header {
               color: var(--primary);
               border-radius: var(--spacing-xxxs);
             }
-          }
-          >p {
-            display: flex;
-            padding: var(--spacing-xs);
-            border-top: 1px solid var(--light-gray);
-            align-items: center;
-
-            &:hover {
-              color: var(--primary);
-              border-radius: var(--spacing-xxxs);
-            }
-          }
+          }   
 
           >ul {
             margin-top: 0;
@@ -248,7 +237,7 @@ header {
 
         &.nav-nested-list {
           >li {
-            >a {
+            >a,>p {
               border-top: 0;
               padding-left: var(--spacing-l);
               margin-top: var(--spacing-s);
@@ -293,7 +282,7 @@ header {
               }
 
               >a,
-              >span {
+              >span,>p {
                 padding: var(--spacing-xxs) var(--spacing-s);
                 border-radius: var(--spacing-xxxs) var(--spacing-xxxs) 0 0;
                 display: inline-block;
@@ -302,6 +291,9 @@ header {
                 >i {
                   display: none;
                 }
+              }
+              >p{
+                margin:0;
               }
 
               >ul {
@@ -322,6 +314,10 @@ header {
                     }
 
                     & .nav-nested-list li:last-child a {
+                      margin-bottom: -3px;
+                      border-radius: 0 0 var(--spacing-xxxs) var(--spacing-xxxs);
+                    }
+                    & .nav-nested-list li:last-child p {
                       margin-bottom: -3px;
                       border-radius: 0 0 var(--spacing-xxxs) var(--spacing-xxxs);
                     }
@@ -431,6 +427,18 @@ header {
 
             >li {
               a {
+                padding: var(--spacing-xxs) var(--spacing-xxs) var(--spacing-xxs) var(--spacing-s);
+                border-radius: 0;
+                border-top: 0;
+                margin-top: 0;
+
+                &:hover {
+                  background: var(--primary);
+                  color: var(--white);
+                  text-decoration: none;
+                }
+              }
+              p {
                 padding: var(--spacing-xxs) var(--spacing-xxs) var(--spacing-xxs) var(--spacing-s);
                 border-radius: 0;
                 border-top: 0;
