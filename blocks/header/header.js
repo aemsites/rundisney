@@ -413,6 +413,7 @@ export default async function decorate(block) {
 
         navSection.addEventListener('keydown', (e) => {
           if (e.code === 'Enter' || e.code === 'Space') {
+            if (e.target && (e.target.tagName === 'A' || e.target.closest('a'))) return;
             e.preventDefault();
             const isExpanded = navSection.getAttribute('aria-expanded') === 'true';
             if (!isExpanded) {
