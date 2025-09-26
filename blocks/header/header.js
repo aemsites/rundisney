@@ -195,7 +195,7 @@ function handleDropdownHover(navSection, shouldOpen, event = null) {
         }
       }
     }
-  } else if (!event || isMouseOutsideDropdown(navSection, event)) {
+  } else {
     navSection.setAttribute('aria-expanded', 'false');
   }
 }
@@ -261,7 +261,7 @@ function decorateNestedDropdowns(navSection) {
 
   if (!isDesktop.matches) {
     subList.classList.add('hidden');
-    const topLevelLink = navSection.querySelector(':scope > a') || navSection.querySelector(':scope > span');
+    const topLevelLink = navSection.querySelector(':scope > a,:scope > p') || navSection.querySelector(':scope > span');
 
     if (topLevelLink) {
       topLevelLink.addEventListener('click', (e) => {
@@ -390,7 +390,9 @@ export default async function decorate(block) {
         } else if (p.querySelector(':scope > picture')) {
           const img = p.querySelector(':scope img');
           p.replaceWith(img);
-        } else {
+         } else if (p.querySelector(':scope > p,:scope > i')) {
+          p.replaceWith(p);
+          } else {
           const span = createElement('span', {}, p.textContent);
           p.replaceWith(span);
         }
@@ -399,7 +401,9 @@ export default async function decorate(block) {
       const hasSubmenu = navSection.querySelector('ul');
       if (hasSubmenu) {
         navSection.classList.add('nav-drop');
-        navSection.setAttribute('tabindex', '-1');
+        navSection.setAttribute('tabindex', '0');
+        navSection.setAttribute('role', 'button');
+        navSection.setAttribute('aria-haspopup', 'true');
         navSection.setAttribute('aria-expanded', 'false');
 
         decorateNestedDropdowns(navSection);
@@ -409,6 +413,7 @@ export default async function decorate(block) {
 
         navSection.addEventListener('keydown', (e) => {
           if (e.code === 'Enter' || e.code === 'Space') {
+            if (e.target && (e.target.tagName === 'A' || e.target.closest('a'))) return;
             e.preventDefault();
             const isExpanded = navSection.getAttribute('aria-expanded') === 'true';
             if (!isExpanded) {
@@ -435,13 +440,28 @@ export default async function decorate(block) {
   }
 
   const hamburger = document.createElement('div');
-  hamburger.classList.add('nav-hamburger');
-  hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-      <span class="icon size-s icon__menu-global-nav"></span>
-    </button>`;
-  hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
+hamburger.classList.add('nav-hamburger');
+hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
+    <span class="icon size-s icon__menu-global-nav"></span>
+  </button>`;
+hamburger.addEventListener('click', () => {
+  const searchContainer = nav.querySelector('.nav-search-container');
+
+  if (searchContainer){
+    nav.classList.remove('search-active'); //
+    searchContainer.classList.remove('open'); // close search
+    toggleMenu(nav, navSections);
+    const navTools = nav.querySelector('.nav-tools');
+    const searchIcon = navTools.querySelector('i');
+    searchIcon.className = 'icon size-s icon__search';
+  }
+
+});
+
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
+  nav.classList.remove('open');
+
 
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
@@ -466,6 +486,18 @@ export default async function decorate(block) {
       searchForm.append(searchInput);
       searchContainer.append(searchForm);
       nav.prepend(searchContainer);
+
+      searchIcon.addEventListener('click', (e) => {
+        e.preventDefault();
+        const willOpen = !searchContainer.classList.contains('open');
+        if (willOpen) {
+          // close hamburger menu explicitly
+          // Note: toggleMenu(nav, navSections, false) forces close
+          toggleMenu(nav, navSections, false);
+        }
+        searchContainer.classList.toggle('open');
+        if (willOpen) searchInput.focus();
+      });
 
       const toggleSearch = () => {
         nav.classList.toggle('search-active');
