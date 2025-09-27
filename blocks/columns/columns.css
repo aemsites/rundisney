@@ -162,6 +162,14 @@
     }
   }
 
+  &.center {
+    > div {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+
   &.border {
     > div {
       border: 1px solid var(--light-gray);

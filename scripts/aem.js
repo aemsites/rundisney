@@ -420,6 +420,28 @@ function decorateButtons(element) {
           a.className = 'button secondary';
           twoup.classList.add('button-container');
         }
+        if (
+          up.childNodes.length === 1
+          && up.tagName === 'EM'
+          && twoup.childNodes.length === 1
+          && twoup.tagName === 'STRONG'
+          && twoup.parentElement.childNodes.length === 1
+          && twoup.parentElement.tagName === 'P'
+        ) {
+          a.className = 'button tertiary';
+          twoup.parentElement.classList.add('button-container');
+        }
+        if (
+          up.childNodes.length === 1
+          && up.tagName === 'STRONG'
+          && twoup.childNodes.length === 1
+          && twoup.tagName === 'EM'
+          && twoup.parentElement.childNodes.length === 1
+          && twoup.parentElement.tagName === 'P'
+        ) {
+          a.className = 'button tertiary';
+          twoup.parentElement.classList.add('button-container');
+        }
       }
     }
   });

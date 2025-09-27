@@ -1,4 +1,6 @@
 .featured-blogs {
+	margin-bottom: var(--spacing-l);
+
 	> h3 {
 		text-align: center;
 		margin-bottom: var(--spacing-l);

@@ -20,34 +20,46 @@ const handleStoryCards = (main) => {
     const cards = cardSection.querySelectorAll('li');
 
     if (cards.length > 0) {
-      const cells = [];
+      if (!cardSection.closest('.ctas')) {
+        const cells = [];
 
-      [...cards].forEach((card) => {
-        const panelBody = card.querySelector('.panel-body');
-
-        if (panelBody) {
-          const icon = card.querySelector('.headerIcon');
-          const img = card.querySelector('img');
-          const link = card.querySelector('a');
-          const leftCol = icon ? icon.outerHTML : (img ? img.outerHTML : '');
-
-          const isClickableCardsBlock = link && link.textContent === link.href;
-
-          if (link && isClickableCardsBlock) {
-            panelBody.innerHTML += link.outerHTML;
+        [...cards].forEach((card) => {
+          const panelBody = card.querySelector('.panel-body');
+  
+          if (panelBody) {
+            const icon = card.querySelector('.headerIcon');
+            const img = card.querySelector('img');
+            const link = card.querySelector('a');
+            const leftCol = icon ? icon.outerHTML : (img ? img.outerHTML : '');
+  
+            const isClickableCardsBlock = link && link.textContent === link.href;
+  
+            if (link && isClickableCardsBlock) {
+              panelBody.innerHTML += link.outerHTML;
+            }
+  
+            panelBody.querySelectorAll('.headerIcon, img').forEach(el => el.remove());
+            cells.push([leftCol, panelBody.innerHTML]);
           }
-
-          panelBody.querySelectorAll('.headerIcon, img').forEach(el => el.remove());
-          cells.push([leftCol, panelBody.innerHTML]);
-        }
-      });
-
-      const blockTable = WebImporter.Blocks.createBlock(document, {
-        name: 'Cards',
-        cells,
-      });
-
-      cardSection.replaceWith(blockTable);
+        });
+  
+        const blockTable = WebImporter.Blocks.createBlock(document, {
+          name: 'Cards',
+          cells,
+        });
+  
+        cardSection.replaceWith(blockTable);
+      } else {
+        const columnsBlock = WebImporter.Blocks.createBlock(document, {
+          name: 'Columns (center)',
+          cells: [[...cards].map((card) => {
+            const link = card.querySelector('a');
+            return link ? `<strong><em>${link.outerHTML}</em></strong>` : '';
+          })],
+        });
+        cardSection.replaceWith(columnsBlock);
+      }
+      
     }
   });
 
@@ -64,7 +76,7 @@ const handleStoryCards = (main) => {
       const wrapper = storyCardsSection.closest('.storyCardWrapper');
       const cardBlockClasses = ['square-card', 'normal-card', 'two-column-card'];
       const isCardsBlock = wrapper && cardBlockClasses.some(cls => wrapper.classList.contains(cls));
-      const isColumnsBlock = wrapper && (wrapper.classList.contains('stamp-cards') || wrapper.querySelector('.media.full-width.single') || storyCardsSection.querySelector('.event-card.single'));
+      const isColumnsBlock = wrapper && (wrapper.classList.contains('stamp-cards') || wrapper.querySelector('.media.full-width.single') || storyCardsSection.querySelector('.event-card.single') || storyCardsSection.querySelector('.full-alternate.single'));
       const isIconListBlock = wrapper && (wrapper.classList.contains('storyCardBadge'));
       const isCalloutBlock = (storyCardsSection.querySelector('.storyCardIcon') && !wrapper.classList.contains('storyCardBadge')) || storyCardsSection.querySelector('as-story-card-training-item');
 
@@ -121,8 +133,13 @@ const handleStoryCards = (main) => {
           storyCardsSection.replaceWith(blockTable);
         }
       } else if (isColumnsBlock) {
-        const hasIcon = storyCardsSection.querySelector('.titleRow .pepicon');
-        const blockName = hasIcon ? 'Columns (Icon Separator)' : 'Columns';
+        const hasIcon = !storyCardsSection.querySelector('.full-alternate.single') && storyCardsSection.querySelector('.titleRow .pepicon');
+        let blockName = hasIcon ? 'Columns (Icon Separator)' : 'Columns';
+
+        const hasBlueBackground = storyCardsSection.querySelector('.media-body[ng-style*="backgroundColor"]');
+        if (hasBlueBackground) {
+          blockName = hasIcon ? 'Columns (Icon Separator, Blue)' : 'Columns (Blue)';
+        }
 
         const cards = storyCardsSection.querySelectorAll(':scope > li');
         const cells = [];
@@ -148,6 +165,38 @@ const handleStoryCards = (main) => {
             }
           } else {
             rightCol = card.innerHTML;
+          }
+
+          const fullAlternate = storyCardsSection.querySelector('.full-alternate.single');
+
+          if (fullAlternate) {
+            const metadataTable = WebImporter.Blocks.createBlock(document, {
+              name: 'Section Metadata',
+              cells: [['Style', 'Full Width']],
+            });
+            storyCardsSection.after(metadataTable);
+
+            const icon = fullAlternate.querySelector('.iconContainer');
+            if (icon) {
+              const h3 = fullAlternate.querySelector('.title');
+              if (h3) {
+                const iconHTML = icon.outerHTML.replace(/ng-if="[^"]*"/g, '');
+                
+                if (leftCol && leftCol.includes('class="title"')) {
+                  leftCol = leftCol.replace(/<div[^>]*class="iconContainer"[^>]*>[\s\S]*?<\/div>/g, '');
+                  leftCol = leftCol.replace(
+                    /<div[^>]*class="title"[^>]*>([\s\S]*?)<\/div>/,
+                    `<div class="title" role="heading" aria-level="3">${iconHTML}&nbsp;$1</div>`
+                  );
+                } else if (rightCol && rightCol.includes('class="title"')) {
+                  rightCol = rightCol.replace(/<div[^>]*class="iconContainer"[^>]*>[\s\S]*?<\/div>/g, '');
+                  rightCol = rightCol.replace(
+                    /<div[^>]*class="title"[^>]*>([\s\S]*?)<\/div>/,
+                    `<div class="title" role="heading" aria-level="3">${iconHTML}&nbsp;$1</div>`
+                  );
+                }
+              }
+            }
           }
 
           if (leftCol || rightCol) {
@@ -512,6 +561,45 @@ const handleAccordions = (main) => {
   });
 };
 
+const handleResults = (main) => {
+  const resultsFilter = main.querySelector('.resultsFilter');
+
+  if (resultsFilter) {
+    const metadataTable = WebImporter.Blocks.createBlock(document, {
+      name: 'Section Metadata',
+      cells: [['Style', 'Results Filter']],
+    });
+
+    resultsFilter.before(metadataTable);
+    resultsFilter.remove();
+
+    const h1 = main.querySelector('h1');
+    const h1Clone = h1.cloneNode(true);
+    metadataTable.before(h1Clone);
+    h1.remove();
+
+    const subTitle = main.querySelector('.subTitle');
+    const hr = subTitle.nextElementSibling;
+    if (hr) {
+      hr.remove();
+    }
+  }
+
+  const legal = main.querySelector('.detailedDescriptionHolder');
+  if (legal) {
+    const metadataTable = WebImporter.Blocks.createBlock(document, {
+      name: 'Section Metadata',
+      cells: [['Style', 'Narrow']],
+    });
+
+    const p = legal.querySelector('p');
+    const u = document.createElement('u');
+    u.innerHTML = p.innerHTML;
+    p.replaceWith(u);
+    legal.after(metadataTable);
+  }
+};
+
 export default {
   /**
    * Apply DOM operations to the provided document and return
@@ -568,6 +656,7 @@ export default {
     handleNonHeadingTitles(main);
     handleButtons(main);
     handleLinks(main);
+    handleResults(main);
 
     const ret = [];
 

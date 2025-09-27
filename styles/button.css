@@ -12,7 +12,7 @@ button {
   font-family: var(--body-font-family);
   font-style: normal;
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1;
   text-align: center;
   text-decoration: none;
   background-color: var(--primary);
@@ -21,6 +21,11 @@ button {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  > i.icon {
+    font-size: var(--icon-size-s);
+    padding-right: var(--spacing-xxxs);
+  }
 }
 
 a.button:hover,
@@ -49,6 +54,25 @@ a.button.secondary:hover,
 button.secondary:hover {
   background-color: var(--primary);
   color: var(--white);
+}
+
+a.button.tertiary,
+button.tertiary {
+  background-color: var(--white);
+  border: 1px solid var(--navy);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: var(--body-font-size-xl);
+
+  > i.icon {
+    font-size: var(--icon-size);
+  }
+}
+
+a.button.tertiary:hover,
+button.tertiary:hover {
+  border: 1px solid var(--primary);
+  color: var(--primary);
 }
 
 button[disabled],
